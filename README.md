@@ -1,6 +1,6 @@
-# Your final project name goes here
+# RoadBuddies
 
-# Your team member names and uic emails go here
+# Mattia Chiarle (amart409@uic.edu), Francesca Fusco (ffusco2@uic.edu), Alessandro Martinolli (amart409@uic.edu)
 
 # Your GitHub repository link goes here
 If you have a private repository, please add `kaytwo` and `sauravjoshi` as collaborators.
