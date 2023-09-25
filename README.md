@@ -1,39 +1,27 @@
-# RoadBuddies
-## Developers
-__Mattia Chiarle__ (mchiar2@uic.edu)
+# React + TypeScript + Vite
 
-__Francesca Fusco__ (ffusco2@uic.edu)
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-__Alessandro Martinolli__ (amart409@uic.edu)
+Currently, two official plugins are available:
 
-**[Official Repository](https://github.com/FrancescaFusco00/final-project-swad)**
-# What does your application do?
-**Do you want to go somewhere but no one wants to accompany you? Post your plan on RoadBuddies and wait for others to join!**
-RoadBuddies has as its main aspect networking, designed to seamlessly connect and synchronize your solo travel plans with others around the world.
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-The application matches people according to age range and preferences
+## Expanding the ESLint configuration
 
-## What makes it different than a CRUD app? I.e., what functionality does it provide that is not just a user interface layer on top of a database of user information,and the ability to view / add to / change that information?
-__Key Features:__
+If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
 
-- Plan your trip with your preferences
-- Join trips proposed by others
-- Join chat / group chat with voyagers
+- Configure the top-level `parserOptions` property like this:
 
-__Additional Features (to be implemented in case of feasibility):__
+```js
+   parserOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    project: ['./tsconfig.json', './tsconfig.node.json'],
+    tsconfigRootDir: __dirname,
+   },
+```
 
-- Share your past trips
-- When your trip starts, record the places you visited and how much you are spending
-- See the Points of Interest (POI) that your friends shared (on the map) from past trips
-- Favorites list:
-    - You go to a "favorite" section in which you see their proposals or travels
-## What security and privacy concerns do you expect you (as developers) or your users to have with this application?
-- Safety and security
-    - 2FA (Two-Factor Authentication)
-    - People make reviews about each other; low-reviewed accounts are shadowbanned
-    - Additional security check (upload your ID)
-    - When you apply for a trip, a chat is opened with the person who proposed it. Until the person accepts you, you cannot see their name, surname, and contacts
-
-
-
-
+- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
+- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
+- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
