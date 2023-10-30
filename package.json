@@ -10,9 +10,11 @@
     "typecheck": "echo \"Error: no typecheck specified\" && exit 0",
     "test": "echo \"Error: no test specified\" && exit 0",
     "format": "echo \"Error: no format specified\" && exit 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start:supabase": "supabase stop && supabase start"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.38.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.7"
@@ -26,6 +28,7 @@
     "eslint": "^8.45.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "supabase": "^1.106.1",
     "typescript": "^5.0.2",
     "vite": "^4.4.5"
   },

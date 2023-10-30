@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import ReactMarkdown from "react-markdown";
+import { createClient } from "@supabase/supabase-js";
 
 function App() {
   const [content, setContent] = useState("");
