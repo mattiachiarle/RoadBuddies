@@ -16,7 +16,7 @@ import Register from "./components/Register.ts";
 import Chat from "./components/Chat.tsx";
 function App() {
   const [content, setContent] = useState("");
-
+  const [email, setEmail] = useState("");
   useEffect(() => {
     fetch("DESCRIPTION.md")
       .then((res) => res.text())
@@ -34,10 +34,10 @@ function App() {
           <Row>
             <Col>
               <Routes>
-                <Route path="/" element={<DefaultLayout />}>
+                <Route path="/" element={<DefaultLayout  userEmail={email}/>}>
                   {" "}
                   {/*here the list of trips?*/}
-                  <Route index element={<DefaultLayout />} />
+                  <Route index element={<DefaultLayout  userEmail={email}/>} />
                   <Route path="/trips/:tripId/" element={<Trip />}>
                     {" "}
                     {/*here the trip sidebar?*/}
