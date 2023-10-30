@@ -1,4 +1,4 @@
-import {Link, Outlet, useNavigate, useParams} from 'react-router-dom';
+import {Outlet, useNavigate, useParams} from 'react-router-dom';
 import {Button} from "react-bootstrap";
 
 function Trip() {
