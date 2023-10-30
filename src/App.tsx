@@ -13,6 +13,7 @@ import EditTripInfo from "./components/EditTripInfo.tsx";
 import EditToDo from "./components/EditToDo.tsx";
 import Login from "./components/Login.tsx";
 import Register from "./components/Register.ts";
+import Chat from "./components/Chat.tsx";
 function App() {
   const [content, setContent] = useState("");
 
@@ -47,7 +48,7 @@ function App() {
                     />{" "}
                     {/*here the edit participants?*/}
                     <Route path="editInfo" element={<EditTripInfo />} />{" "}
-                    <Route path="char" element={<Chat />} />{" "}
+                    <Route path="chat" element={<Chat />} />{" "}
                     {/*here the edit form?*/}
                     <Route path="editToDo" element={<EditToDo />} />{" "}
                     {/*here the edit route?*/}
