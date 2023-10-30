@@ -47,7 +47,7 @@ function App() {
                     />{" "}
                     {/*here the edit participants?*/}
                     <Route path="editInfo" element={<EditTripInfo />} />{" "}
-                    <Route path="char" element={<Chat />} />{" "}
+                    <Route path="chat" element={<Chat />} />{" "}
                     {/*here the edit form?*/}
                     <Route path="editToDo" element={<EditToDo />} />{" "}
                     {/*here the edit route?*/}

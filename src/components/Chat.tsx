@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useAppContext } from "../context/appContext";
-
+import { Message } from "../utils/types";
+import '../utils/css/chat.css'
 function Chat(props) {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState<Array<Message>>([]);
   const [channel, setChannel] = useState(undefined);
   const { supabase } = useAppContext();
-
   useEffect(() => {
     /** only create the channel if we have a roomCode and username */
     if (props.group.id && props.user.username) {
@@ -37,7 +37,7 @@ function Chat(props) {
           filter: `group_id=eq.${props.group.id}`,
         },
         ({ payload }) => {
-          setMessages((messages) => [...messages, payload]);
+          setMessages((messages : Array<Message>) => [...messages, payload]);
         }
       );
 
@@ -77,21 +77,44 @@ function Chat(props) {
   }, []);
 
   return (
-    <>
-      <Messages messages={messages} />
-      <InputBox />
-    </>
+    <div className = "chat-container">
+      <Messages messages={messages} currentUser={props.user.username} />
+      <InputBox/>
+    </div>
   );
 }
 
-function Messages() {
+function Messages({messages, currentUser}) {
+  return(
+    <div className="message-container">
+      {messages.map((message,idx ) => (
+        <div
+          key = {idx}
+          className = {`message ${message.sender === currentUser ? 'self' : 'other'}`}
+        >
+          <span className="sender">{message.sender}:</span> {message.content}
+        </div>
+    ))}
+    </div>
+  );
   /*Remember to display in a different way user's messages and received messages*/
 }
 
 function InputBox() {
-  const onSend = async (message) => {
+  const [message, setMessage] = useState<Message>();
+  const onSend = async (message: Message) => {
     const { data, error } = await supabase.from("messages").upsert([message]);
   };
+  return(
+    <div className="input-container">
+      <input 
+        type="text" 
+        value={message?.content} 
+        onChange={changeMessage} 
+        placeholder="Type a message..." 
+      />
+      <Button onClick={}>Send</Button>
+    </div>
+  );
 }
-
 export default Chat;
