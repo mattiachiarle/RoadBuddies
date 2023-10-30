@@ -43,14 +43,14 @@ In order to host the application's front-end and back-end we are going to use Re
 
 ## Minimum Viable Project
 
-Our project consists in an agumented Group Trip Application.
+Our project consists in an agumented Group DefaultLayout Application.
 
 **Base setup of the application**
 
 - The user will be able to Sign up and Sign in into the application.
-- The user will be able to create a new Trip, adding the starting point, the destination, the dates and the partecipants.
+- The user will be able to create a new DefaultLayout, adding the starting point, the destination, the dates and the partecipants.
 
-**Trip manager**
+**DefaultLayout manager**
 
 - The user will be able to add or remove partecipants to/from the trip.
 - The user will be able to create a list of the items that are neeeded for the trip.
