@@ -38,7 +38,7 @@ function App() {
         <BrowserRouter>
           <Container fluid className="App">
             <Row>
-              <NavigationBar email={email}/>
+              <NavigationBar email={email} updateEmail={updateEmail}/>
             </Row>
             <Row>
               <Col>
