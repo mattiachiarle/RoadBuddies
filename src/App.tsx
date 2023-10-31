@@ -12,7 +12,7 @@ import EditParticipants from "./components/EditParticipants.tsx";
 import EditTripInfo from "./components/EditTripInfo.tsx";
 import EditToDo from "./components/EditToDo.tsx";
 import Login from "./components/Login.tsx";
-import Register from "./components/Register.ts";
+import Register from "./components/Register.tsx";
 import Chat from "./components/Chat.tsx";
 function App() {
   const [content, setContent] = useState("");
