@@ -35,7 +35,7 @@ function Register() {
     try {
       const { data, error } = await supabase
           .from('user')
-          .insert([{ email: email }]);
+          .insert([{ user_id: email }]);
 
       if (error) throw error;
 
