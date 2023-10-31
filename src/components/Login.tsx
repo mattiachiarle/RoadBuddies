@@ -25,7 +25,7 @@ function Login() {
 
       if (error) throw error;
 
-      toast.success(`Welcome ${user.email}!`);
+      toast.success(`Welcome ${username}!`);
       navigate(`/`);
     } catch (error: any) {
       setErr(error.message);
@@ -90,6 +90,9 @@ function Login() {
             </Button>{" "}
           </Form.Group>
         </Form>
+        <Button variant="primary" onClick={() => navigate("/register")}>
+          Register
+        </Button>
       </>
   );
 }

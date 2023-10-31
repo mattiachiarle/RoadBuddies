@@ -28,24 +28,25 @@ function App() {
             <Row>
               <Col>
                 <Routes>
-                  <Route path="/" element={<DefaultLayout userEmail={email} />}>
+                  <Route
+                    path="/"
+                    element={<DefaultLayout userEmail={email} />}
+                  />{" "}
+                  {/*here the list of trips?*/}
+                  <Route path="/trips/:tripId/" element={<Trip />}>
                     {" "}
-                    {/*here the list of trips?*/}
-                    <Route path="trips/:tripId/" element={<Trip />}>
-                      {" "}
-                      {/*here the trip sidebar?*/}
-                      <Route index element={<TripInfo />} />
-                      <Route
-                        path="editParticipants"
-                        element={<EditParticipants />}
-                      />{" "}
-                      {/*here the edit participants?*/}
-                      <Route path="editInfo" element={<EditTripInfo />} />{" "}
-                      <Route path="chat" element={<Chat />} />{" "}
-                      {/*here the edit form?*/}
-                      <Route path="editToDo" element={<EditToDo />} />{" "}
-                      {/*here the edit route?*/}
-                    </Route>
+                    {/*here the trip sidebar?*/}
+                    <Route index element={<TripInfo />} />
+                    <Route
+                      path="/editParticipants"
+                      element={<EditParticipants />}
+                    />{" "}
+                    {/*here the edit participants?*/}
+                    <Route path="/editInfo" element={<EditTripInfo />} />{" "}
+                    <Route path="/chat" element={<Chat />} />{" "}
+                    {/*here the edit form?*/}
+                    <Route path="/editToDo" element={<EditToDo />} />{" "}
+                    {/*here the edit route?*/}
                   </Route>
                   <Route path="/login" element={<Login />} />{" "}
                   {/*here the login form?*/}
