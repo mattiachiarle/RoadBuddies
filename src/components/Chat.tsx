@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import AppContext from "../context/appContext";
 import { Message } from "../utils/types";
-import "../utils/css/chat.css";
+import {Button, Form} from "react-bootstrap";
+import '../utils/css/chat.css'
+
 function Chat(props) {
   const [messages, setMessages] = useState<Array<Message>>([]);
   const [channel, setChannel] = useState(undefined);
@@ -104,19 +106,32 @@ function Messages({ messages, currentUser }) {
 
 function InputBox() {
   const [message, setMessage] = useState<Message>();
-  const onSend = async (message: Message) => {
-    const { data, error } = await supabase.from("messages").upsert([message]);
+  const onSend = async (message: string | undefined) => {
+    if(message){
+      try{
+        const { data, error } = await supabase.from("messages").upsert([message]);
+      }catch(error){
+        console.log(error);
+      }
+    }
   };
-  return (
-    <div className="input-container">
-      <input
-        type="text"
-        value={message?.content}
-        onChange={changeMessage}
-        placeholder="Type a message..."
-      />
-      {/* <Button onClick={}>Send</Button> */}
-    </div>
+  const changeMessage = (ev: React.ChangeEvent<HTMLInputElement>) => {
+    const newMessage = {
+      content: ev.target.value,
+      sender: props.user.username,
+    }
+    setMessage(newMessage);
+  };
+  return(
+    <Form className="input-container" onSubmit={(e) => {e.preventDefault();onSend(message?.content) }}>
+      <Form.Group className="mb-4">
+        <Form.Label>Message</Form.Label>
+        <Form.Control type="text" value={message?.content} onChange={changeMessage} placeholder="Type a message..." />
+      </Form.Group>
+      <Form.Group>
+        <Button variant="success" onClick={()=>{onSend(message?.content)}}>Send</Button>{' '}
+      </Form.Group>
+    </Form>
   );
 }
 export default Chat;
