@@ -1,13 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import { Row, Col, Card } from "react-bootstrap";
 import AppContext from "../context/appContext.tsx";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 function DefaultLayout(props: { userEmail: string }) {
   const [trips, setTrips] = useState([]);
   const { userEmail } = props;
 
   // Initialize Supabase client
-  const { supabase } = useContext(AppContext);
+  const supabase = useContext(AppContext);
   const navigate = useNavigate();
   useEffect(() => {
     // Function to fetch trips from the database
@@ -28,7 +28,7 @@ function DefaultLayout(props: { userEmail: string }) {
         } catch (error) {
           console.error("Error fetching trips:", error);
         }
-      }else{
+      } else {
         navigate("/login");
       }
     };
