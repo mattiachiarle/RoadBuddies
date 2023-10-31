@@ -3,7 +3,7 @@ import {redirect} from "react-router-dom";
 import {useContext} from "react";
 import AppContext from "../context/appContext.tsx";
 import {toast} from "react-toastify";
-
+//sign out is here
 
 function NavigationBar(props: { email: any; updateEmail: (arg0: string) => void; }) {
 
