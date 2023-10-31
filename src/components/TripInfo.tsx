@@ -1,14 +1,22 @@
-import { useEffect, useState } from "react"; // import your supabase client
+import { useContext, useEffect, useState } from "react"; // import your supabase client
 import AppContext from "../context/appContext";
 import { Trip } from "../utils/types";
 import "../utils/css/tripInfo.css";
+import { useParams } from "react-router-dom";
 
-function TripInfo({id}: string) {
-  const { supabase } = useContext(AppContext);
+function TripInfo() {
+  const supabase = useContext(AppContext);
   const [trip, setTrip] = useState<Trip | null>(null);
+
+  const { tripId } = useParams();
+
   useEffect(() => {
     const fetchTrip = async () => {
-      const { data, error } = await supabase.from("trips").select("*").eq('id',id).single();
+      const { data, error } = await supabase
+        .from("trips")
+        .select("*")
+        .eq("id", tripId)
+        .single();
 
       if (error) {
         console.error("Error fetching trip:", error);

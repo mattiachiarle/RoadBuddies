@@ -1,24 +1,55 @@
-import {Outlet, useNavigate, useParams} from 'react-router-dom';
-import {Button} from "react-bootstrap";
+import { useContext, useEffect, useState } from "react";
+import { Row, Col, Card } from "react-bootstrap";
+import AppContext from "../context/appContext";
+import { useNavigate } from "react-router-dom";
 
-function Trip() {
+function DefaultLayout(props: { userEmail: string }) {
+    const [trips, setTrips] = useState([]);
+    const { userEmail } = props;
+    const  supabase  = useContext(AppContext);
     const navigate = useNavigate();
-    const { tripId } = useParams();
+
+    useEffect(() => {
+        const fetchTrips = async () => {
+            if (userEmail) {
+                try {
+                    const { data: tripsData, error } = await supabase
+                        .from("trips")
+                        .select("group(id, name)")
+                        .eq("user_id", userEmail);
+
+                    if (error) throw error;
+
+                    setTrips(tripsData.map((trip) => ({ id: trip.group.id, name: trip.group.name })));
+                } catch (error) {
+                    console.error("Error fetching trips:", error);
+                }
+            } else {
+                navigate("/login");
+            }
+        };
+
+        fetchTrips();
+    }, [userEmail, supabase, navigate]);
 
     return (
-        <div className="trip-layout">
-            <div className="sidebar">
-                {/* Sidebar content goes here */}
-                <Button onClick={() => navigate(`${tripId}/editInfo`)} variant="primary">Edit Info</Button>
-                <Button onClick={() => navigate(`${tripId}/chat`)} variant="primary">Chat</Button>
-                <Button onClick={() => navigate(`${tripId}/editToDo`)} variant="primary">Edit To-Do</Button>
-            </div>
-            <div className="main-content">
-                <Outlet /> {/* This will render the child routes */}
-            </div>
-        </div>
+        <>
+            <Row>
+                <Col>
+                    <h3>Your Trips</h3>
+                    {trips.length > 0 ? (
+                        trips.map((trip) => (
+                            <Card key={trip.id} style={{ margin: "10px 0" }} onClick={() => navigate(`/trips/${trip.id}`)}>
+                                <Card.Body>{trip.name}</Card.Body>
+                            </Card>
+                        ))
+                    ) : (
+                        <p>No trips found.</p>
+                    )}
+                </Col>
+            </Row>
+        </>
     );
 }
 
-
-export default Trip;
+export default DefaultLayout;
