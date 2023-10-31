@@ -1,15 +1,21 @@
 import AppContext from "../context/appContext";
 import { Button, Card, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-function Login({ updateEmail }) {
+function Login({ email, updateEmail }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [err, setErr] = useState("");
   const navigate = useNavigate();
   const supabase = useContext(AppContext);
+
+  useEffect(() => {
+    if (email != "") {
+      navigate(`/`);
+    }
+  }, [email]);
 
   const onSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission

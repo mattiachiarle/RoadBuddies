@@ -11,13 +11,22 @@ import Login from "./components/Login.tsx";
 import Register from "./components/Register.tsx";
 import Chat from "./components/Chat.tsx";
 
-import { AppContextProvider } from "./context/appContext.tsx";
-import { useState } from "react";
+import AppContext, { AppContextProvider } from "./context/appContext.tsx";
+import { useContext, useEffect, useState } from "react";
 
 function App() {
   const [email, setEmail] = useState("");
+  const supabase = useContext(AppContext);
 
-  const updateEmail = (email) => {
+  useEffect(() => {
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (event == "SIGNED_IN") {
+        setEmail(session.user.email);
+      }
+    });
+  }, []);
+
+  const updateEmail = (email: string) => {
     setEmail(email);
   };
 
@@ -53,7 +62,7 @@ function App() {
                   </Route>
                   <Route
                     path="/login"
-                    element={<Login updateEmail={updateEmail} />}
+                    element={<Login email={email} updateEmail={updateEmail} />}
                   />{" "}
                   {/*here the login form?*/}
                   <Route path="/register" element={<Register />} />{" "}
