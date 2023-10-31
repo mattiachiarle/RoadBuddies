@@ -9,7 +9,7 @@ function Register() {
   const [password, setPassword] = useState("");
   const [err, setErr] = useState("");
   const navigate = useNavigate();
-  const { supabase } = useContext(AppContext);
+  const  supabase  = useContext(AppContext);
 
   const onSubmit = async (e) => {
     e.preventDefault(); // Prevent the form from submitting the traditional way
@@ -31,7 +31,7 @@ function Register() {
       toast.error(error.message);
     }
   };
-  const insertUser = async (email) => {
+  const insertUser = async (email: string) => {
     try {
       const { data, error } = await supabase
           .from('user')
