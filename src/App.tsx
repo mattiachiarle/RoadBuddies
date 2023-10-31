@@ -17,6 +17,10 @@ import { useState } from "react";
 function App() {
   const [email, setEmail] = useState("");
 
+  const updateEmail = (email) => {
+    setEmail(email);
+  };
+
   return (
     <>
       <AppContextProvider>
@@ -28,27 +32,29 @@ function App() {
             <Row>
               <Col>
                 <Routes>
-                  <Route
-                    path="/"
-                    element={<DefaultLayout userEmail={email} />}
-                  />{" "}
-                  {/*here the list of trips?*/}
-                  <Route path="/trips/:tripId/" element={<Trip />}>
+                  <Route path="/" element={<DefaultLayout userEmail={email} />}>
                     {" "}
-                    {/*here the trip sidebar?*/}
-                    <Route index element={<TripInfo />} />
-                    <Route
-                      path="/editParticipants"
-                      element={<EditParticipants />}
-                    />{" "}
-                    {/*here the edit participants?*/}
-                    <Route path="/editInfo" element={<EditTripInfo />} />{" "}
-                    <Route path="/chat" element={<Chat />} />{" "}
-                    {/*here the edit form?*/}
-                    <Route path="/editToDo" element={<EditToDo />} />{" "}
-                    {/*here the edit route?*/}
+                    {/*here the list of trips?*/}
+                    <Route path="trips/:tripId/" element={<Trip />}>
+                      {" "}
+                      {/*here the trip sidebar?*/}
+                      <Route index element={<TripInfo />} />
+                      <Route
+                        path="editParticipants"
+                        element={<EditParticipants />}
+                      />{" "}
+                      {/*here the edit participants?*/}
+                      <Route path="editInfo" element={<EditTripInfo />} />{" "}
+                      <Route path="chat" element={<Chat />} />{" "}
+                      {/*here the edit form?*/}
+                      <Route path="editToDo" element={<EditToDo />} />{" "}
+                      {/*here the edit route?*/}
+                    </Route>
                   </Route>
-                  <Route path="/login" element={<Login />} />{" "}
+                  <Route
+                    path="/login"
+                    element={<Login updateEmail={updateEmail} />}
+                  />{" "}
                   {/*here the login form?*/}
                   <Route path="/register" element={<Register />} />{" "}
                   {/*here the register form?*/}
