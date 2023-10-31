@@ -19,7 +19,7 @@ function Register() {
         email: email,
         password: password,
       });
-
+      insertUser(email)
       if (error) {
         throw error;
       }
@@ -29,6 +29,19 @@ function Register() {
     } catch (error: any) {
       setErr(error.message);
       toast.error(error.message);
+    }
+  };
+  const insertUser = async (email) => {
+    try {
+      const { data, error } = await supabase
+          .from('user')
+          .insert([{ email: email }]);
+
+      if (error) throw error;
+
+      console.log('User inserted:', data);
+    } catch (error) {
+      console.error('Error inserting user:', error);
     }
   };
 
