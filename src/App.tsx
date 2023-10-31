@@ -32,22 +32,23 @@ function App() {
                   {" "}
                   {/*here the list of trips?*/}
 
-                  <Route path="trips/:tripId/" element={<Trip />}>
+
+                  <Route path="/trips/:tripId/" element={<Trip />}>
                     {" "}
                     {/*here the trip sidebar?*/}
                     <Route index element={<TripInfo />} />
                     <Route
-                      path="editParticipants"
+                      path="/editParticipants"
                       element={<EditParticipants />}
                     />{" "}
                     {/*here the edit participants?*/}
-                    <Route path="editInfo" element={<EditTripInfo />} />{" "}
-                    <Route path="chat" element={<Chat />} />{" "}
+                    <Route path="/editInfo" element={<EditTripInfo />} />{" "}
+                    <Route path="/chat" element={<Chat />} />{" "}
                     {/*here the edit form?*/}
-                    <Route path="editToDo" element={<EditToDo />} />{" "}
+                    <Route path="/editToDo" element={<EditToDo />} />{" "}
                     {/*here the edit route?*/}
                   </Route>
-                </Route>
+
                 <Route path="/login" element={<Login />} />{" "}
                 {/*here the login form?*/}
                 <Route path="/register" element={<Register />} />{" "}
