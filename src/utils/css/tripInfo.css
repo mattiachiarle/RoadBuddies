@@ -1,30 +1,28 @@
-.trip-info {
-    width: 80%;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .trip-info h2 {
-    color: #333;
-    margin-bottom: 20px;
-  }
-  
-  .trip-info div {
-    margin-bottom: 10px;
-  }
-  
-  .trip-info strong {
-    color: #333;
-  }
-  
-  .trip-info ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .trip-info li {
-    padding: 5px 0;
-  }
+/* .trip-info {
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  padding: 20px;
+  margin: 20px 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.trip-info h2 {
+  color: #343a40;
+  margin-bottom: 20px;
+}
+
+.trip-info div {
+  margin-bottom: 10px;
+}
+
+.trip-info strong {
+  color: #6c757d;
+}
+
+.trip-info ul {
+  padding-left: 20px;
+}
+
+.trip-info ul li {
+  line-height: 1.5;
+} */
