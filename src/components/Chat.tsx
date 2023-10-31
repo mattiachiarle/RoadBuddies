@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { useAppContext } from "../context/appContext";
+import AppContext from "../context/appContext";
 import { Message } from "../utils/types";
-import '../utils/css/chat.css'
+import "../utils/css/chat.css";
 function Chat(props) {
   const [messages, setMessages] = useState<Array<Message>>([]);
   const [channel, setChannel] = useState(undefined);
-  const { supabase } = useAppContext();
+  const { supabase } = useContext(AppContext);
   useEffect(() => {
     /** only create the channel if we have a roomCode and username */
     if (props.group.id && props.user.username) {
@@ -37,7 +37,7 @@ function Chat(props) {
           filter: `group_id=eq.${props.group.id}`,
         },
         ({ payload }) => {
-          setMessages((messages : Array<Message>) => [...messages, payload]);
+          setMessages((messages: Array<Message>) => [...messages, payload]);
         }
       );
 
@@ -77,24 +77,26 @@ function Chat(props) {
   }, []);
 
   return (
-    <div className = "chat-container">
+    <div className="chat-container">
       <Messages messages={messages} currentUser={props.user.username} />
-      <InputBox/>
+      <InputBox />
     </div>
   );
 }
 
-function Messages({messages, currentUser}) {
-  return(
+function Messages({ messages, currentUser }) {
+  return (
     <div className="message-container">
-      {messages.map((message,idx ) => (
+      {messages.map((message, idx) => (
         <div
-          key = {idx}
-          className = {`message ${message.sender === currentUser ? 'self' : 'other'}`}
+          key={idx}
+          className={`message ${
+            message.sender === currentUser ? "self" : "other"
+          }`}
         >
           <span className="sender">{message.sender}:</span> {message.content}
         </div>
-    ))}
+      ))}
     </div>
   );
   /*Remember to display in a different way user's messages and received messages*/
@@ -105,15 +107,15 @@ function InputBox() {
   const onSend = async (message: Message) => {
     const { data, error } = await supabase.from("messages").upsert([message]);
   };
-  return(
+  return (
     <div className="input-container">
-      <input 
-        type="text" 
-        value={message?.content} 
-        onChange={changeMessage} 
-        placeholder="Type a message..." 
+      <input
+        type="text"
+        value={message?.content}
+        onChange={changeMessage}
+        placeholder="Type a message..."
       />
-      <Button onClick={}>Send</Button>
+      {/* <Button onClick={}>Send</Button> */}
     </div>
   );
 }
