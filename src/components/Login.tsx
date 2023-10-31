@@ -90,6 +90,9 @@ function Login() {
             </Button>{" "}
           </Form.Group>
         </Form>
+        <Button variant="primary" onClick={() => navigate("/register")}>
+          Register
+        </Button>
       </>
   );
 }
