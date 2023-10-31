@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import AppContext from "../context/appContext";
 import { Message } from "../utils/types";
-import {Button, Form} from "react-bootstrap";
-import '../utils/css/chat.css'
+import { Button, Form } from "react-bootstrap";
+import "../utils/css/chat.css";
 
 function Chat(props) {
   const [messages, setMessages] = useState<Array<Message>>([]);
   const [channel, setChannel] = useState(undefined);
-  const { supabase } = useContext(AppContext);
+  const supabase = useContext(AppContext);
   useEffect(() => {
     /** only create the channel if we have a roomCode and username */
     if (props.group.id && props.user.username) {
@@ -107,10 +107,12 @@ function Messages({ messages, currentUser }) {
 function InputBox() {
   const [message, setMessage] = useState<Message>();
   const onSend = async (message: string | undefined) => {
-    if(message){
-      try{
-        const { data, error } = await supabase.from("messages").upsert([message]);
-      }catch(error){
+    if (message) {
+      try {
+        const { data, error } = await supabase
+          .from("messages")
+          .upsert([message]);
+      } catch (error) {
         console.log(error);
       }
     }
@@ -119,17 +121,35 @@ function InputBox() {
     const newMessage = {
       content: ev.target.value,
       sender: props.user.username,
-    }
+    };
     setMessage(newMessage);
   };
-  return(
-    <Form className="input-container" onSubmit={(e) => {e.preventDefault();onSend(message?.content) }}>
+  return (
+    <Form
+      className="input-container"
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSend(message?.content);
+      }}
+    >
       <Form.Group className="mb-4">
         <Form.Label>Message</Form.Label>
-        <Form.Control type="text" value={message?.content} onChange={changeMessage} placeholder="Type a message..." />
+        <Form.Control
+          type="text"
+          value={message?.content}
+          onChange={changeMessage}
+          placeholder="Type a message..."
+        />
       </Form.Group>
       <Form.Group>
-        <Button variant="success" onClick={()=>{onSend(message?.content)}}>Send</Button>{' '}
+        <Button
+          variant="success"
+          onClick={() => {
+            onSend(message?.content);
+          }}
+        >
+          Send
+        </Button>{" "}
       </Form.Group>
     </Form>
   );
