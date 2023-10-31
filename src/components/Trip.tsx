@@ -1,28 +1,40 @@
 import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
-import { Button } from "react-bootstrap";
+import {Button, Col, Row} from "react-bootstrap";
 
 function Trip() {
   const navigate = useNavigate();
   const { tripId } = useParams();
 
   return (
-    <div className="trip-layout">
-      <div className="sidebar">
-        {/* Sidebar content goes here */}
-        <Button onClick={() => navigate(`editInfo`)} variant="primary">
-          Edit Info
-        </Button>
-        <Button onClick={() => navigate(`chat`)} variant="primary">
-          Chat
-        </Button>
-        <Button onClick={() => navigate(`editToDo`)} variant="primary">
-          Edit To-Do
-        </Button>
-      </div>
-      <div className="main-content">
-        <Outlet /> {/* This will render the child routes */}
-      </div>
-    </div>
+      <>
+      <Row>
+          <Col>
+              <div className="sidebar" xs={3}>
+                  {/* Sidebar content goes here */}
+                  <Row>
+                      <Button onClick={() => navigate(`editInfo`)} variant="primary" style={{ border: '1px solid black' }}>
+                          Edit Info
+                      </Button>
+                    </Row>
+                  <Row>
+                      <Button onClick={() => navigate(`chat`)} variant="primary" style={{ border: '1px solid black' }}>
+                          Chat
+                      </Button>
+                  </Row>
+                  <Row>
+                      <Button onClick={() => navigate(`editToDo`)} variant="primary" style={{ border: '1px solid black' }}>
+                          Edit To-Do
+                      </Button>
+                  </Row>
+
+              </div>
+          </Col>
+          <Col xs={9}>
+              <Outlet /> {/* This will render the child routes */}
+          </Col>
+      </Row>
+      </>
+
   );
 }
 

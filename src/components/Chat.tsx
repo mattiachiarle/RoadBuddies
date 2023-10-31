@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import AppContext from "../context/appContext";
 import { Message, NewMessage } from "../utils/types";
-import { Button, Form } from "react-bootstrap";
+import {Button, Form, Row} from "react-bootstrap";
 import "../utils/css/chat.css";
 import { useParams } from "react-router-dom";
 
@@ -145,33 +145,39 @@ function InputBox(props) {
     setMessage(ev.target.value);
   };
   return (
-    <Form
-      className="input-container"
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSend(message);
-      }}
-    >
-      <Form.Group className="mb-4">
-        <Form.Label>Message</Form.Label>
-        <Form.Control
-          type="text"
-          value={message}
-          onChange={changeMessage}
-          placeholder="Type a message..."
-        />
-      </Form.Group>
-      <Form.Group>
-        <Button
-          variant="success"
-          onClick={() => {
-            onSend(message);
-          }}
-        >
-          Send
-        </Button>{" "}
-      </Form.Group>
-    </Form>
+
+     <Form
+         className="input-container"
+         onSubmit={(e) => {
+           e.preventDefault();
+           onSend(message);
+         }}
+     >
+       <Row>
+         <Form.Group className="mb-4">
+           <Form.Label></Form.Label>
+           <Form.Control
+               type="text"
+               value={message}
+               onChange={changeMessage}
+               placeholder="Type a message..."
+           />
+         </Form.Group>
+         <Form.Group>
+           <Button
+               variant="success"
+               onClick={() => {
+                 onSend(message);
+               }}
+           >
+             Send
+           </Button>{" "}
+         </Form.Group>
+       </Row>
+
+     </Form>
+
+
   );
 }
 export default Chat;
