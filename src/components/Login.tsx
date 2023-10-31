@@ -1,7 +1,7 @@
 import AppContext from "../context/appContext";
 import { Button, Card, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import {useContext, useState} from "react";
+import { useContext, useState } from "react";
 import { toast } from "react-toastify";
 
 function Login() {
@@ -12,23 +12,33 @@ function Login() {
   const { supabase } = useContext(AppContext);
 
   const onSubmit = async () => {
+    event.preventDefault(); // Prevent default form submission
     try {
       setErr("");
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: "example@email.com",
-        password: "example-password",
-        options: {
-          redirectTo: "https//example.com/welcome",
-        },
+      const { user, error } = await supabase.auth.signInWithPassword({
+        email: username,
+        password: password,
+       /* options: {
+          redirectTo: "https://example.com/welcome",
+        },*/
       });
-      // props.setUser(user); //props do not exist yet
-      toast.success("Welcome " /*+user.email+"!"*/); // how do I get the email?
+
+      if (error) throw error;
+
+      toast.success(`Welcome ${user.email}!`);
       navigate(`/`);
     } catch (error: any) {
       setErr(error.message);
       toast.error(error.message);
     }
   };
+
+  const submitWhenEnter = async (event) => {
+    if (event.key === "Enter") {
+      await onSubmit(event);
+    }
+  };
+
   return (
       <>
         {err && (
@@ -48,11 +58,10 @@ function Login() {
                 </Card.Text>
               </Card.Body>
             </Card>
-        )}{" "}
-        {/* if err is true, display the paragraph */}
+        )}
         <Form onSubmit={onSubmit}>
           <Form.Group className="mb-3">
-            <Form.Label>username</Form.Label>
+            <Form.Label>Username</Form.Label>
             <Form.Control
                 type="email"
                 value={username}
@@ -62,7 +71,7 @@ function Login() {
             />
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>password</Form.Label>
+            <Form.Label>Password</Form.Label>
             <Form.Control
                 type="password"
                 value={password}
@@ -73,17 +82,16 @@ function Login() {
             />
           </Form.Group>
           <Form.Group>
-            <Button variant="success" onClick={onSubmit}>
-              {" "}
-              SUBMIT{" "}
+            <Button variant="success" type="submit" onClick={onSubmit}>
+              SUBMIT
             </Button>{" "}
             <Button variant="success" onClick={() => navigate("/")}>
-              {" "}
-              CANCEL{" "}
+              CANCEL
             </Button>{" "}
           </Form.Group>
         </Form>
       </>
   );
 }
+
 export default Login;

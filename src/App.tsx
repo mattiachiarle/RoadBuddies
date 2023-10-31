@@ -1,4 +1,3 @@
-import "./App.css";
 
 import NavigationBar from "./components/NavigationBar.tsx";
 import { Col, Container, Row } from "react-bootstrap";
@@ -32,8 +31,8 @@ function App() {
                 <Route path="/" element={<DefaultLayout userEmail={email} />}>
                   {" "}
                   {/*here the list of trips?*/}
-                  <Route index element={<DefaultLayout userEmail={email} />} />
-                  <Route path="/trips/:tripId/" element={<Trip />}>
+
+                  <Route path="trips/:tripId/" element={<Trip />}>
                     {" "}
                     {/*here the trip sidebar?*/}
                     <Route index element={<TripInfo />} />
@@ -48,14 +47,14 @@ function App() {
                     <Route path="editToDo" element={<EditToDo />} />{" "}
                     {/*here the edit route?*/}
                   </Route>
-                  <Route path="login" element={<Login />} />{" "}
-                  {/*here the login form?*/}
-                  <Route path="register" element={<Register />} />{" "}
-                  {/*here the register form?*/}
                 </Route>
+                <Route path="/login" element={<Login />} />{" "}
+                {/*here the login form?*/}
+                <Route path="/register" element={<Register />} />{" "}
+                {/*here the register form?*/}
               </Routes>
             </Col>
-            <Col></Col>
+
           </Row>
         </Container>
       </BrowserRouter>
