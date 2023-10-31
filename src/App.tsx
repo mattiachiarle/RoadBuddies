@@ -16,21 +16,27 @@ import Chat from "./components/Chat.tsx";
 import { AppContextProvider } from "./context/appContext.tsx";
 
 function App() {
+  const [email, setEmail] = useState("");
+
   return (
     <>
       <AppContextProvider>
         <BrowserRouter>
           <Container fluid className="App">
+            <ReactMarkdown children={content} />
             <Row>
               <NavigationBar />
             </Row>
             <Row>
               <Col>
                 <Routes>
-                  <Route path="/" element={<DefaultLayout />}>
+                  <Route path="/" element={<DefaultLayout userEmail={email} />}>
                     {" "}
                     {/*here the list of trips?*/}
-                    <Route index element={<DefaultLayout />} />
+                    <Route
+                      index
+                      element={<DefaultLayout userEmail={email} />}
+                    />
                     <Route path="/trips/:tripId/" element={<Trip />}>
                       {" "}
                       {/*here the trip sidebar?*/}
