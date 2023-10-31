@@ -13,7 +13,7 @@ function TripInfo() {
   useEffect(() => {
     const fetchTrip = async () => {
       const { data, error } = await supabase
-        .from("trips")
+        .from("group")
         .select("*")
         .eq("id", tripId)
         .single();
@@ -47,7 +47,7 @@ function TripInfo() {
       <div>
         <strong>Participants:</strong>
         <ul>
-          {trip.participants.map((participant) => (
+          {trip.participants?.map((participant) => (
             <li key={participant}>{participant}</li>
           ))}
         </ul>

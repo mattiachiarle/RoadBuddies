@@ -2,20 +2,18 @@ import { useContext, useEffect, useState } from "react";
 import AppContext from "../context/appContext";
 import { Trip } from "../utils/types";
 import { useParams } from "react-router-dom";
-import { Button, Row, Form } from "react-bootstrap";
+import { Button, Row, Col, Form } from "react-bootstrap";
 
 function EditTripInfo() {
   const supabase = useContext(AppContext);
   const [trip, setTrip] = useState<Trip | null>();
   const { tripId } = useParams();
-  const { userEmail } = props;
   useEffect(() => {
     const fetchTrip = async () => {
       const { data, error } = await supabase
-        .from("trips")
+        .from("group")
         .select("*")
-        .eq("id", tripId)
-        .single();
+        .eq("id", tripId);
 
       if (error) {
         console.error("Error fetching trip:", error);
@@ -42,7 +40,7 @@ function EditTripInfo() {
     event.preventDefault();
 
     const { data, error } = await supabase
-      .from("trips")
+      .from("group")
       .update(trip)
       .eq("id", tripId);
 
@@ -60,48 +58,56 @@ function EditTripInfo() {
   return (
     <Form onSubmit={handleSubmit}>
       <Row>
-        <label>
-          Start Date:
-          <input
-            type="date"
-            name="startDate"
-            value={trip.startDate}
-            onChange={handleInputChange}
-          />
-        </label>
+        <Col>
+          <Form.Group>
+            <Form.Label>
+              Start Date:
+              <Form.Control
+                type="date"
+                name="startDate"
+                value={trip.startDate}
+                onChange={handleInputChange}
+              />
+            </Form.Label>
+          </Form.Group>
+        </Col>
+        <Col>
+          <Form.Group>
+            <Form.Label>
+              End Date:
+              <Form.Control
+                type="date"
+                name="endDate"
+                value={trip.endDate}
+                onChange={handleInputChange}
+              />
+            </Form.Label>
+          </Form.Group>
+        </Col>
+        <Col>
+          <Form.Group>
+            <Form.Label>
+              Vehicle:
+              <Form.Select
+                name="vehicle"
+                onChange={(
+                  event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+                ) => handleInputChange(event)}
+                value={trip.vehicle}
+              >
+                <option>{trip.vehicle}</option>
+                <option>Car</option>
+                <option>Motorbike</option>
+                <option>Bicycle</option>
+                <option>On foot</option>
+                <option>Airplane</option>
+                <option>Train</option>
+              </Form.Select>
+            </Form.Label>
+          </Form.Group>
+          </Col>
       </Row>
-      <Row>
-        <label>
-          End Date:
-          <input
-            type="date"
-            name="endDate"
-            value={trip.endDate}
-            onChange={handleInputChange}
-          />
-        </label>
-      </Row>
-      <Row>
-        <label>
-          Vehicle:
-          <Form.Select
-            name="vehicle"
-            onChange={(
-              event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-            ) => handleInputChange(event)}
-            value={trip.vehicle}
-          >
-            <option>{trip.vehicle}</option>
-            <option>Car</option>
-            <option>Motorbike</option>
-            <option>Bicycle</option>
-            <option>On foot</option>
-            <option>Airplane</option>
-            <option>Train</option>
-          </Form.Select>
-        </label>
-      </Row>
-      <Button type="submit" value="Update Trip" />
+      <Button type="submit" value="Update Trip" >Submit</Button>
     </Form>
   );
 }
