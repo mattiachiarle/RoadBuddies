@@ -23,7 +23,6 @@ function App() {
       <AppContextProvider>
         <BrowserRouter>
           <Container fluid className="App">
-            <ReactMarkdown children={content} />
             <Row>
               <NavigationBar />
             </Row>
