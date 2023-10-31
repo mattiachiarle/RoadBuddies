@@ -1,11 +1,11 @@
 export type Message = {
-    content: string;
-    sender: string;
+  content: string;
+  user_id: string;
 };
 export type Trip = {
-    id: number;
-    startDate: string;
-    endDate: string;
-    vehicle: string;
-    participants: string[];
+  id: number;
+  startDate: string;
+  endDate: string;
+  vehicle: string;
+  participants: string[];
 };

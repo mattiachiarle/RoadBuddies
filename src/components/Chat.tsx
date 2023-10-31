@@ -1,23 +1,29 @@
 import { useContext, useEffect, useState } from "react";
 import AppContext from "../context/appContext";
-import { Message } from "../utils/types";
+import { Message, NewMessage } from "../utils/types";
 import { Button, Form } from "react-bootstrap";
 import "../utils/css/chat.css";
+import { useParams } from "react-router-dom";
 
-function Chat(props) {
+function Chat({ email }) {
   const [messages, setMessages] = useState<Array<Message>>([]);
   const [channel, setChannel] = useState(undefined);
   const supabase = useContext(AppContext);
+  const { tripId } = useParams();
+  // console.log(supabase);
+
   useEffect(() => {
+    console.log(tripId);
+    console.log(email);
     /** only create the channel if we have a roomCode and username */
-    if (props.group.id && props.user.username) {
+    if (tripId && email) {
       /**
        * Step 1:
        *
        * Create the supabase channel for the roomCode, configured
        * so the channel receives its own messages
        */
-      const channel = supabase.channel(`group:${props.group.id}`, {
+      const channel = supabase.channel(`group:${tripId}`, {
         config: {
           broadcast: {
             self: true,
@@ -36,10 +42,15 @@ function Chat(props) {
           event: "INSERT",
           schema: "public",
           table: "messages",
-          filter: `group_id=eq.${props.group.id}`,
+          filter: `group_id=eq.${tripId}`,
         },
-        ({ payload }) => {
-          setMessages((messages: Array<Message>) => [...messages, payload]);
+        (res) => {
+          console.log(res.new.user_id);
+          const newMessage: Message = {
+            content: res.new.content,
+            user_id: res.new.user_id,
+          };
+          setMessages((messages: Array<Message>) => [...messages, newMessage]);
         }
       );
 
@@ -58,14 +69,17 @@ function Chat(props) {
       setChannel(channel);
 
       const getInitialMessages = async () => {
+        const session = await supabase.auth.getSession();
+        console.log(session);
         const { data, error } = await supabase
           .from("messages")
           .select("*")
-          .eq("group_id", groupId)
-          .order("timestamp", { ascending: true });
+          .eq("group_id", tripId)
+          .order("created_at", { ascending: true });
         if (error) {
           console.log(error);
         }
+        console.log(data);
         setMessages(data);
       };
 
@@ -76,12 +90,12 @@ function Chat(props) {
         setChannel(undefined);
       };
     }
-  }, []);
+  }, [tripId, email]);
 
   return (
     <div className="chat-container">
-      <Messages messages={messages} currentUser={props.user.username} />
-      <InputBox />
+      <Messages messages={messages} currentUser={email} />
+      <InputBox username={email} group={tripId} />
     </div>
   );
 }
@@ -93,10 +107,10 @@ function Messages({ messages, currentUser }) {
         <div
           key={idx}
           className={`message ${
-            message.sender === currentUser ? "self" : "other"
+            message.user_id === currentUser ? "self" : "other"
           }`}
         >
-          <span className="sender">{message.sender}:</span> {message.content}
+          <span className="sender">{message.user_id}:</span> {message.content}
         </div>
       ))}
     </div>
@@ -104,39 +118,45 @@ function Messages({ messages, currentUser }) {
   /*Remember to display in a different way user's messages and received messages*/
 }
 
-function InputBox() {
-  const [message, setMessage] = useState<Message>();
-  const onSend = async (message: string | undefined) => {
+function InputBox(props) {
+  const [message, setMessage] = useState<string>("");
+  const supabase = useContext(AppContext);
+
+  const onSend = async (message: string) => {
     if (message) {
       try {
-        const { data, error } = await supabase
-          .from("messages")
-          .upsert([message]);
+        const { data, error } = await supabase.from("messages").insert({
+          user_id: props.username,
+          content: message,
+          group_id: props.group,
+        });
+
+        if (error) {
+          throw error;
+        } else {
+          setMessage("");
+        }
       } catch (error) {
         console.log(error);
       }
     }
   };
   const changeMessage = (ev: React.ChangeEvent<HTMLInputElement>) => {
-    const newMessage = {
-      content: ev.target.value,
-      sender: props.user.username,
-    };
-    setMessage(newMessage);
+    setMessage(ev.target.value);
   };
   return (
     <Form
       className="input-container"
       onSubmit={(e) => {
         e.preventDefault();
-        onSend(message?.content);
+        onSend(message);
       }}
     >
       <Form.Group className="mb-4">
         <Form.Label>Message</Form.Label>
         <Form.Control
           type="text"
-          value={message?.content}
+          value={message}
           onChange={changeMessage}
           placeholder="Type a message..."
         />
@@ -145,7 +165,7 @@ function InputBox() {
         <Button
           variant="success"
           onClick={() => {
-            onSend(message?.content);
+            onSend(message);
           }}
         >
           Send

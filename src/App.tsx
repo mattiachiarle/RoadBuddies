@@ -19,11 +19,13 @@ function App() {
   const supabase = useContext(AppContext);
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange((event, session) => {
-      if (event == "SIGNED_IN") {
-        setEmail(session.user.email);
+    const getSession = async () => {
+      const session = await supabase.auth.getSession();
+      if (session != undefined) {
+        setEmail(session.data.session.user.email);
       }
-    });
+    };
+    getSession();
   }, []);
 
   const updateEmail = (email: string) => {
@@ -41,8 +43,10 @@ function App() {
             <Row>
               <Col>
                 <Routes>
-                  <Route path="/" element={<DefaultLayout userEmail={email} />}/>
-                  {" "}
+                  <Route
+                    path="/"
+                    element={<DefaultLayout userEmail={email} />}
+                  />{" "}
                   {/*here the list of trips?*/}
                   <Route path="/trips/:tripId/" element={<Trip />}>
                     {" "}
@@ -54,7 +58,7 @@ function App() {
                     />{" "}
                     {/*here the edit participants?*/}
                     <Route path="editInfo" element={<EditTripInfo />} />{" "}
-                    <Route path="chat" element={<Chat />} />{" "}
+                    <Route path="chat" element={<Chat email={email} />} />{" "}
                     {/*here the edit form?*/}
                     <Route path="editToDo" element={<EditToDo />} />{" "}
                     {/*here the edit route?*/}
