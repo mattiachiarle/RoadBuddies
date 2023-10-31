@@ -4,10 +4,10 @@ import { createClient } from "@supabase/supabase-js";
 const AppContext = createContext({});
 
 const AppContextProvider = ({ children }) => {
-  const supabase = createClient(
-    import.meta.env.SUPABASE_LOCAL_URL,
-    import.meta.env.SUPABASE_LOCAL_ANON_KEY
-  );
+  const url = import.meta.env.VITE_SUPABASE_LOCAL_URL;
+  const key = import.meta.env.VITE_SUPABASE_LOCAL_ANON_KEY;
+
+  const supabase = createClient(url, key);
 
   return (
     <AppContext.Provider
