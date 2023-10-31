@@ -5,17 +5,18 @@ import { useParams } from 'react-router-dom';
 import {Button, Row, Form} from "react-bootstrap";
 
 
-function EditTripInfo() {
+function EditTripInfo(props: { userEmail: string }) {
   const { supabase } = useContext(AppContext);
   const [trip, setTrip] = useState<Trip | null>();
   const { tripId } = useParams();
-
+  const { userEmail } = props;
   useEffect(() => {
     const fetchTrip = async () => {
       const { data, error } = await supabase
         .from("trips")
         .select("*")
         .eq('id', tripId)
+        .eq("user", userEmail)
         .single();
 
       if (error) {
