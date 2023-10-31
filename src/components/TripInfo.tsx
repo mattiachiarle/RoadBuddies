@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"; // import your supabase client
-import { useAppContext } from "../context/appContext";
+import AppContext from "../context/appContext";
 import { Trip } from "../utils/types";
 import "../utils/css/tripInfo.css";
 
 function TripInfo({id}: string) {
-  const { supabase } = useAppContext();
+  const { supabase } = useContext(AppContext);
   const [trip, setTrip] = useState<Trip | null>(null);
   useEffect(() => {
     const fetchTrip = async () => {

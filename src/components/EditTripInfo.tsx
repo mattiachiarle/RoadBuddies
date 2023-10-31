@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { useAppContext } from "../context/appContext";
+import AppContext from "../context/appContext";
 import { Trip } from "../utils/types";
 import { useParams } from 'react-router-dom';
 import {Button, Row, Form} from "react-bootstrap";
 
 
 function EditTripInfo() {
-  const { supabase } = useAppContext();
+  const { supabase } = useContext(AppContext);
   const [trip, setTrip] = useState<Trip | null>();
   const { tripId } = useParams();
 
@@ -28,7 +28,7 @@ function EditTripInfo() {
     fetchTrip();
   }, [tripId]);
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement| HTMLSelectElement>) => {
     if (trip) {
         setTrip({
           ...trip,
@@ -73,7 +73,7 @@ function EditTripInfo() {
     <Row>
       <label>
         Vehicle:
-        <Form.Select name="vehicle" onChange={handleInputChange} value={trip.vehicle} >
+        <Form.Select name="vehicle" onChange={(event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => handleInputChange(event)} value={trip.vehicle} >
             <option>{trip.vehicle}</option>
             <option>Car</option>
             <option>Motorbike</option>
