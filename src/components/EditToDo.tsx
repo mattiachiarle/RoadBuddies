@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { Todo } from "../utils/types";
 import { Form, Button, Row } from "react-bootstrap";
 import "../utils/css/todo.css";
-function EditToDo({ email}) {
+function EditToDo({ email }) {
   const supabase = useContext(AppContext);
   const [todos, setTodos] = useState<Array<Todo>>([]);
   const [newTodo, setNewTodo] = useState("");
@@ -33,10 +33,15 @@ function EditToDo({ email}) {
 
   const handleNewTodoSubmit = async (event) => {
     event.preventDefault();
-    if (newTodo.trim.length < 1) return;
+    console.log(newTodo.trim);
+    if (newTodo.trim() == "") {
+      return;
+    }
     const { data, error } = await supabase
       .from("todo")
-      .insert([{ group_id: tripId, checked: false, content: newTodo, user: email }])
+      .insert([
+        { group_id: tripId, checked: false, content: newTodo, user: email },
+      ])
       .select();
 
     if (error) {
