@@ -17,7 +17,7 @@ function EditToDo({ email }) {
         .from("todo")
         .select("*")
         .eq("group_id", tripId)
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: true });
       if (error) {
         console.error("Error fetching todos:", error);
       } else if (data) {
