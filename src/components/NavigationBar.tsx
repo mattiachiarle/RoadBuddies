@@ -18,7 +18,7 @@ function NavigationBar(props: { email: any; updateEmail: (arg0: string) => void;
 
             toast.success("You have been signed out successfully!");
             props.updateEmail("");
-            redirect("/login");
+            navigate("/login");
         } catch (error) {
             console.error("Error signing out:", error);
             toast.error(error.message);
