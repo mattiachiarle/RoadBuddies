@@ -119,6 +119,7 @@ function EditToDo({ email }) {
                 {participants.map((participant) => (
                   <Dropdown.Item eventKey={participant}>{participant}</Dropdown.Item>
                 ))}
+                  <Dropdown.Item eventKey={undefined}>unassign</Dropdown.Item>
               </Dropdown.Menu>
           </Dropdown>
             <input
