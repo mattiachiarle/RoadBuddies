@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import AppContext from "../context/appContext";
-import { Message, NewMessage } from "../utils/types";
+import { Message } from "../utils/types";
 import { Button, Form, Row } from "react-bootstrap";
 import "../utils/css/chat.css";
 import { useParams } from "react-router-dom";
@@ -48,7 +48,7 @@ function Chat({ email }) {
             user_id: res.new.user_id,
           };
           setMessages((messages: Array<Message>) => [...messages, newMessage]);
-        }
+        },
       );
 
       /**
@@ -66,7 +66,6 @@ function Chat({ email }) {
       setChannel(channel);
 
       const getInitialMessages = async () => {
-        const session = await supabase.auth.getSession();
         const { data, error } = await supabase
           .from("messages")
           .select("*")
@@ -121,7 +120,7 @@ function InputBox(props) {
   const onSend = async (message: string) => {
     if (message) {
       try {
-        const { data, error } = await supabase.from("messages").insert({
+        const { error } = await supabase.from("messages").insert({
           user_id: props.username,
           content: message,
           group_id: props.group,
@@ -135,11 +134,14 @@ function InputBox(props) {
 
         if (message == "@chatgpt who pays?") {
           const payingUser = await getPayingUser(tripId);
-          const { data, error } = await supabase.from("messages").insert({
+          const { error } = await supabase.from("messages").insert({
             user_id: props.username,
             content: payingUser,
             group_id: props.group,
           });
+          if (error) {
+            throw error;
+          }
         }
 
         if (error) {
@@ -154,7 +156,7 @@ function InputBox(props) {
   const askWhoPays = async () => {
     try {
       {
-        const { data, error } = await supabase.from("messages").insert({
+        const { error } = await supabase.from("messages").insert({
           user_id: props.username,
           content: "@chatgpt who pays?",
           group_id: props.group,
@@ -168,7 +170,7 @@ function InputBox(props) {
       }
 
       const payingUser = await getPayingUser(tripId);
-      const { data, error } = await supabase.from("messages").insert({
+      const { error } = await supabase.from("messages").insert({
         user_id: props.username,
         content: payingUser,
         group_id: props.group,

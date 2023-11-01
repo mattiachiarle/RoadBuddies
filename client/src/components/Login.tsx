@@ -21,7 +21,7 @@ function Login({ email, updateEmail }) {
     event.preventDefault(); // Prevent default form submission
     try {
       setErr("");
-      const { user, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email: username,
         password: password,
         /* options: {
@@ -34,7 +34,7 @@ function Login({ email, updateEmail }) {
       toast.success(`Welcome ${username}!`);
       updateEmail(username);
       navigate(`/`);
-    } catch (error: any) {
+    } catch (error) {
       console.log(error);
       setErr(error.message);
       toast.error(error.message);

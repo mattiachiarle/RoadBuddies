@@ -9,24 +9,24 @@ function Register() {
   const [password, setPassword] = useState("");
   const [err, setErr] = useState("");
   const navigate = useNavigate();
-  const  supabase  = useContext(AppContext);
+  const supabase = useContext(AppContext);
 
   const onSubmit = async (e) => {
     e.preventDefault(); // Prevent the form from submitting the traditional way
     try {
       setErr("");
-      const { user, error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email: email,
         password: password,
       });
-      insertUser(email)
+      insertUser(email);
       if (error) {
         throw error;
       }
 
       toast.success("Registration successful! ");
       navigate(`/`);
-    } catch (error: any) {
+    } catch (error) {
       setErr(error.message);
       toast.error(error.message);
     }
@@ -34,14 +34,14 @@ function Register() {
   const insertUser = async (email: string) => {
     try {
       const { data, error } = await supabase
-          .from('user')
-          .insert([{ user_id: email }]);
+        .from("user")
+        .insert([{ user_id: email }]);
 
       if (error) throw error;
 
-      console.log('User inserted:', data);
+      console.log("User inserted:", data);
     } catch (error) {
-      console.error('Error inserting user:', error);
+      console.error("Error inserting user:", error);
     }
   };
 

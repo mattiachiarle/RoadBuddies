@@ -1,9 +1,8 @@
-import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { Button, Col, Row } from "react-bootstrap";
 
 function Trip() {
   const navigate = useNavigate();
-  const { tripId } = useParams();
 
   return (
     <>

@@ -3,8 +3,8 @@ import AppContext from "../context/appContext";
 import { Trip } from "../utils/types";
 import { useParams } from "react-router-dom";
 import { Button, Row, Col, Form } from "react-bootstrap";
-import { useNavigate } from 'react-router-dom';
-import * as dayjs from "dayjs"
+import { useNavigate } from "react-router-dom";
+import * as dayjs from "dayjs";
 function EditTripInfo() {
   const navigate = useNavigate();
   const supabase = useContext(AppContext);
@@ -28,7 +28,7 @@ function EditTripInfo() {
   }, [tripId, supabase]);
 
   const handleInputChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     if (trip) {
       setTrip({
@@ -40,7 +40,7 @@ function EditTripInfo() {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (trip){
+    if (trip) {
       const startDate = dayjs(trip.start_date);
       const endDate = dayjs(trip.end_date);
       if (startDate > endDate) {
@@ -127,7 +127,9 @@ function EditTripInfo() {
               <Form.Select
                 name="vehicle"
                 onChange={(
-                  event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+                  event: React.ChangeEvent<
+                    HTMLInputElement | HTMLSelectElement
+                  >,
                 ) => handleInputChange(event)}
                 value={trip.vehicle}
               >
@@ -141,9 +143,11 @@ function EditTripInfo() {
               </Form.Select>
             </Form.Label>
           </Form.Group>
-          </Col>
+        </Col>
       </Row>
-      <Button type="submit" value="Update Trip" >Submit</Button>
+      <Button type="submit" value="Update Trip">
+        Submit
+      </Button>
     </Form>
   );
 }

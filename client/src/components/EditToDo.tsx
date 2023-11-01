@@ -24,17 +24,19 @@ function EditToDo({ email }) {
         setTodos(data);
       }
       const { data: participantData, error: participantError } = await supabase
-      .from("trips")
-      .select("user_id")
-      .eq("group_id", tripId);
+        .from("trips")
+        .select("user_id")
+        .eq("group_id", tripId);
 
-    if (participantError) {
-      console.error("Error fetching participants:", participantError);
-    } else if (participantData) {
-      // Assuming that the user_id is the participant
-      const participants = participantData.map((participant) => participant.user_id);
-      setParticipants(participants);
-    }
+      if (participantError) {
+        console.error("Error fetching participants:", participantError);
+      } else if (participantData) {
+        // Assuming that the user_id is the participant
+        const participants = participantData.map(
+          (participant) => participant.user_id,
+        );
+        setParticipants(participants);
+      }
     };
 
     fetchTodos();
@@ -77,26 +79,27 @@ function EditToDo({ email }) {
       console.error("Error updating todo:", error);
     } else if (data) {
       setTodos(
-        todos.map((t) => (t.id === todo.id ? { ...t, checked: !t.checked } : t))
+        todos.map((t) =>
+          t.id === todo.id ? { ...t, checked: !t.checked } : t,
+        ),
       );
     }
   };
-  const handleUserSelect = async (selectedUser,todoId) => {
-    const { data, error } = await supabase
-      .from('todo')
+  const handleUserSelect = async (selectedUser, todoId) => {
+    const { error } = await supabase
+      .from("todo")
       .update({ user: selectedUser })
-      .eq('id', todoId)
+      .eq("id", todoId)
       .select();
 
-  
     if (error) {
-      console.error('Error updating todo:', error);
+      console.error("Error updating todo:", error);
     } else {
-    // Update the local state if necessary
-    const updatedTodos = todos.map((todo) => 
-      todo.id === todoId ? { ...todo, user: selectedUser } : todo
-    );
-    setTodos(updatedTodos);
+      // Update the local state if necessary
+      const updatedTodos = todos.map((todo) =>
+        todo.id === todoId ? { ...todo, user: selectedUser } : todo,
+      );
+      setTodos(updatedTodos);
     }
   };
   return (
@@ -110,18 +113,34 @@ function EditToDo({ email }) {
             >
               {todo.content}
             </span>
-            <Dropdown onSelect={(selectedUser) => handleUserSelect(selectedUser, todo.id)}>
-              <Dropdown.Toggle style={{backgroundColor: "transparent",marginLeft: "10px", color: "#D3D3D3" }}variant="success" id="dropdown-basic">
+            <Dropdown
+              onSelect={(selectedUser) =>
+                handleUserSelect(selectedUser, todo.id)
+              }
+            >
+              <Dropdown.Toggle
+                style={{
+                  backgroundColor: "transparent",
+                  marginLeft: "10px",
+                  color: "#D3D3D3",
+                }}
+                variant="success"
+                id="dropdown-basic"
+              >
                 {todo.user ? todo.user : "click here to assign"}
               </Dropdown.Toggle>
 
               <Dropdown.Menu>
                 {participants.map((participant) => (
-                  <Dropdown.Item key={participant} eventKey={participant}>{participant}</Dropdown.Item>
+                  <Dropdown.Item key={participant} eventKey={participant}>
+                    {participant}
+                  </Dropdown.Item>
                 ))}
-                  <Dropdown.Item key={undefined} eventKey={undefined}>unassign</Dropdown.Item>
+                <Dropdown.Item key={undefined} eventKey={undefined}>
+                  unassign
+                </Dropdown.Item>
               </Dropdown.Menu>
-          </Dropdown>
+            </Dropdown>
             <input
               style={{ marginLeft: "10px" }}
               type="checkbox"

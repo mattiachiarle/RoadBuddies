@@ -12,7 +12,8 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "typecheck": "echo \"Error: no typecheck specified\" && exit 0",
     "test": "echo \"Error: no test specified\" && exit 0",
-    "format": "echo \"Error: no format specified\" && exit 0",
+    "format": "prettier . --check",
+    "format-write": "prettier . --write",
     "preview": "vite preview",
     "start:supabase": "supabase stop && supabase start"
   },
@@ -24,6 +25,7 @@
     "dotenv": "^16.3.1",
     "easygpt": "^1.6.2",
     "express": "^4.18.2",
+    "prettier": "^3.0.3",
     "react": "^18.2.0",
     "react-bootstrap": "^2.9.1",
     "react-dom": "^18.2.0",

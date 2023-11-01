@@ -33,7 +33,7 @@ function TripInfo({ email }) {
       } else if (participantData) {
         // Assuming that the user_id is the participant
         const participants = participantData.map(
-          (participant) => participant.user_id
+          (participant) => participant.user_id,
         );
         setParticipants(participants);
       }

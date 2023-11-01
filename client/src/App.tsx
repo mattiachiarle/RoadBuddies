@@ -1,6 +1,6 @@
 import NavigationBar from "./components/NavigationBar.tsx";
 import { Col, Container, Row } from "react-bootstrap";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import DefaultLayout from "./components/DefaultLayout.tsx";
 import Trip from "./components/Trip.tsx";
 import TripInfo from "./components/TripInfo.tsx";

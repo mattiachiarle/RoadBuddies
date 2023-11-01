@@ -16,5 +16,5 @@ export type Todo = {
   id: number;
   content: string;
   checked: boolean;
-  user : string;
+  user: string;
 };

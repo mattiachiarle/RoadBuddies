@@ -33,7 +33,7 @@ function AddTransaction() {
   const handleNewTransactionSubmit = async (ev) => {
     ev.preventDefault();
     if (user && amount > 0) {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("transactions")
         .insert([{ group_id: tripId, user_id: user, amount: amount }]);
 
