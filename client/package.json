@@ -12,7 +12,8 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "typecheck": "echo \"Error: no typecheck specified\" && exit 0",
     "test": "echo \"Error: no test specified\" && exit 0",
-    "format": "echo \"Error: no format specified\" && exit 0",
+    "format": "prettier src --check",
+    "format-write": "prettier . --write",
     "preview": "vite preview",
     "start:supabase": "supabase stop && supabase start"
   },

@@ -20,6 +20,7 @@ jobs:
         with:
           node-version: 18.x
       - name: npm ci
+        run: cd client
         run: npm ci
       - name: format
         run: npm run format
