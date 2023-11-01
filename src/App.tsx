@@ -10,6 +10,7 @@ import EditToDo from "./components/EditToDo.tsx";
 import Login from "./components/Login.tsx";
 import Register from "./components/Register.tsx";
 import Chat from "./components/Chat.tsx";
+import AddTransaction from "./components/AddTransaction.tsx";
 
 import AppContext, { AppContextProvider } from "./context/appContext.tsx";
 import { useContext, useEffect, useState } from "react";
@@ -64,6 +65,7 @@ function App() {
                       path="editToDo"
                       element={<EditToDo email={email} />}
                     />{" "}
+                    <Route path="addTransaction" element={<AddTransaction />} />{" "}
                     {/*here the edit route?*/}
                   </Route>
                   <Route

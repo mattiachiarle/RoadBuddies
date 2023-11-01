@@ -1,20 +1,18 @@
 import { useContext, useEffect, useState } from "react";
 import AppContext from "../context/appContext";
 import { Message, NewMessage } from "../utils/types";
-import {Button, Form, Row} from "react-bootstrap";
+import { Button, Form, Row } from "react-bootstrap";
 import "../utils/css/chat.css";
 import { useParams } from "react-router-dom";
+import { getPayingUser } from "../API.js";
 
 function Chat({ email }) {
   const [messages, setMessages] = useState<Array<Message>>([]);
   const [channel, setChannel] = useState(undefined);
   const supabase = useContext(AppContext);
   const { tripId } = useParams();
-  // console.log(supabase);
 
   useEffect(() => {
-    console.log(tripId);
-    console.log(email);
     /** only create the channel if we have a roomCode and username */
     if (tripId && email) {
       /**
@@ -45,7 +43,6 @@ function Chat({ email }) {
           filter: `group_id=eq.${tripId}`,
         },
         (res) => {
-          console.log(res.new.user_id);
           const newMessage: Message = {
             content: res.new.content,
             user_id: res.new.user_id,
@@ -70,7 +67,6 @@ function Chat({ email }) {
 
       const getInitialMessages = async () => {
         const session = await supabase.auth.getSession();
-        console.log(session);
         const { data, error } = await supabase
           .from("messages")
           .select("*")
@@ -79,7 +75,6 @@ function Chat({ email }) {
         if (error) {
           console.log(error);
         }
-        console.log(data);
         setMessages(data);
       };
 
@@ -121,6 +116,7 @@ function Messages({ messages, currentUser }) {
 function InputBox(props) {
   const [message, setMessage] = useState<string>("");
   const supabase = useContext(AppContext);
+  const { tripId } = useParams();
 
   const onSend = async (message: string) => {
     if (message) {
@@ -136,48 +132,96 @@ function InputBox(props) {
         } else {
           setMessage("");
         }
+
+        if (message == "@chatgpt who pays?") {
+          const payingUser = await getPayingUser(tripId);
+          const { data, error } = await supabase.from("messages").insert({
+            user_id: props.username,
+            content: payingUser,
+            group_id: props.group,
+          });
+        }
+
+        if (error) {
+          throw error;
+        }
       } catch (error) {
         console.log(error);
       }
     }
   };
+
+  const askWhoPays = async () => {
+    try {
+      {
+        const { data, error } = await supabase.from("messages").insert({
+          user_id: props.username,
+          content: "@chatgpt who pays?",
+          group_id: props.group,
+        });
+
+        if (error) {
+          throw error;
+        } else {
+          setMessage("");
+        }
+      }
+
+      const payingUser = await getPayingUser(tripId);
+      const { data, error } = await supabase.from("messages").insert({
+        user_id: props.username,
+        content: payingUser,
+        group_id: props.group,
+      });
+
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const changeMessage = (ev: React.ChangeEvent<HTMLInputElement>) => {
     setMessage(ev.target.value);
   };
   return (
-
-     <Form
-         className="input-container"
-         onSubmit={(e) => {
-           e.preventDefault();
-           onSend(message);
-         }}
-     >
-       <Row>
-         <Form.Group className="mb-4">
-           <Form.Label></Form.Label>
-           <Form.Control
-               type="text"
-               value={message}
-               onChange={changeMessage}
-               placeholder="Type a message..."
-           />
-         </Form.Group>
-         <Form.Group>
-           <Button
-               variant="success"
-               onClick={() => {
-                 onSend(message);
-               }}
-           >
-             Send
-           </Button>{" "}
-         </Form.Group>
-       </Row>
-
-     </Form>
-
-
+    <Form
+      className="input-container"
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSend(message);
+      }}
+    >
+      <Row>
+        <Form.Group className="mb-4">
+          <Form.Label></Form.Label>
+          <Form.Control
+            type="text"
+            value={message}
+            onChange={changeMessage}
+            placeholder="Type a message..."
+          />
+        </Form.Group>
+        <Form.Group>
+          <Button
+            variant="success"
+            onClick={() => {
+              onSend(message);
+            }}
+          >
+            Send
+          </Button>{" "}
+          <Button
+            onClick={() => {
+              askWhoPays();
+            }}
+          >
+            Who pays?
+          </Button>
+        </Form.Group>
+      </Row>
+    </Form>
   );
 }
 export default Chat;
