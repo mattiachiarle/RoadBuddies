@@ -101,8 +101,6 @@ app.get("/api/groups/:groupid/getPayingUser", async (req, res) => {
   res.json({ user: response.content });
 });
 
-app.use("/", express.static("/dist"));
-
 app.listen(PORT, () => {
   console.log(`Server started on http://localhost:${PORT}/`);
 });

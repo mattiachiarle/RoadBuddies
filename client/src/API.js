@@ -1,4 +1,4 @@
-const url = "http://localhost:3000";
+const url = "https://roadbuddies-backend.onrender.com:3000";
 
 async function getPayingUser(groupId) {
   const response = await fetch(url + `/api/groups/${groupId}/getPayingUser`, {
