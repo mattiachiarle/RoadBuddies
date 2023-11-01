@@ -74,7 +74,7 @@ function EditParticipants() {
           <li key={index}>
             <Button onClick={() => handleDeleteParticipant(participant)}>
               Delete
-            </Button>   
+            </Button>
             {participant}
           </li>
         ))}
@@ -97,7 +97,9 @@ function EditParticipants() {
               {users
                 .filter((user) => !participants.includes(user))
                 .map((user) => (
-                  <Dropdown.Item eventKey={user}>{user}</Dropdown.Item>
+                  <Dropdown.Item key={user} eventKey={user}>
+                    {user}
+                  </Dropdown.Item>
                 ))}
             </Dropdown.Menu>
           </Dropdown>

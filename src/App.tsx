@@ -21,7 +21,7 @@ function App() {
   useEffect(() => {
     const getSession = async () => {
       const session = await supabase.auth.getSession();
-      if (session != undefined) {
+      if (session.data.session != undefined) {
         setEmail(session.data.session.user.email);
       }
     };
@@ -38,7 +38,7 @@ function App() {
         <BrowserRouter>
           <Container fluid className="App">
             <Row>
-              <NavigationBar email={email} updateEmail={updateEmail}/>
+              <NavigationBar email={email} updateEmail={updateEmail} />
             </Row>
             <Row>
               <Col>
@@ -51,7 +51,7 @@ function App() {
                   <Route path="/trips/:tripId/" element={<Trip />}>
                     {" "}
                     {/*here the trip sidebar?*/}
-                    <Route index element={<TripInfo email={email}/>} />
+                    <Route index element={<TripInfo email={email} />} />
                     <Route
                       path="editParticipants"
                       element={<EditParticipants />}
@@ -60,7 +60,10 @@ function App() {
                     <Route path="editInfo" element={<EditTripInfo />} />{" "}
                     <Route path="chat" element={<Chat email={email} />} />{" "}
                     {/*here the edit form?*/}
-                    <Route path="editToDo" element={<EditToDo email={email} />} />{" "}
+                    <Route
+                      path="editToDo"
+                      element={<EditToDo email={email} />}
+                    />{" "}
                     {/*here the edit route?*/}
                   </Route>
                   <Route
