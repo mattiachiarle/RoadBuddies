@@ -17,14 +17,14 @@ const app = express();
 
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL,
-  process.env.VITE_SUPABASE_ANON_KEY,
+  process.env.VITE_SUPABASE_ANON_KEY
 );
 
 app.use(
   cors({
     origin: "https://roadbuddies.onrender.com",
     credentials: true,
-  }),
+  })
 );
 
 app.get("/api/groups/:groupid/getPayingUser", async (req, res) => {
@@ -54,7 +54,7 @@ app.get("/api/groups/:groupid/getPayingUser", async (req, res) => {
   }, {});
 
   const totalExpenses = Object.values(expensesDictionary).sort(
-    (a, b) => b.paid - a.paid,
+    (a, b) => b.paid - a.paid
   );
 
   let message =
@@ -82,7 +82,7 @@ app.get("/api/groups/:groupid/getPayingUser", async (req, res) => {
   gpt.addMessage(message);
 
   gpt.addRule(
-    "Make a fair decision. On average, all the users should spend the same amount. Explain your decision in 1/2 sentencs and clearly write the mail of the usr that must pay.",
+    "Make a fair decision. On average, all the users should spend the same amount, so you shold pick users who spent less. Explain your decision in 1/2 sentencs and clearly write the mail of the usr that must pay."
   );
 
   const response = await gpt.ask();
