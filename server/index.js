@@ -82,7 +82,7 @@ app.get("/api/groups/:groupid/getPayingUser", async (req, res) => {
   gpt.addMessage(message);
 
   gpt.addRule(
-    "Make a fair decision based both on the total amount spent (weight: 75%, users who spent less will pay with an higher probability) and the last payments (weight: 25%, users that made many payments pay with a lower probability). Add an explanation. Be concise, so write at most 2/3 sentences and include in the motivations the numbers provided in the question."
+    "Make a fair decision. On average, all the users should spend the same amount. Explain your decision in 1/2 sentencs and clearly write the mail of the usr that must pay."
   );
 
   const response = await gpt.ask();
