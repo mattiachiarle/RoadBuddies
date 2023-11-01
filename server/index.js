@@ -8,17 +8,6 @@ import EasyGPT from "easygpt";
 import "dotenv/config.js";
 import { createClient } from "@supabase/supabase-js";
 
-// import { Configuration, OpenAIApi } from "openai";
-
-// const configuration = new Configuration({
-//   organization: "org-lsdStcKCOZFM8VU81b5YacFe",
-//   apiKey: process.env.OPENAI_API_KEY,
-// });
-// const openai = new OpenAIApi(configuration);
-// const response = await openai.listEngines();
-
-// dotenv.config();
-
 const api_key = process.env.CHAT_GPT_API;
 
 const gpt = new EasyGPT();
@@ -31,12 +20,12 @@ const supabase = createClient(
   process.env.VITE_SUPABASE_ANON_KEY
 );
 
-// app.use(
-//   cors({
-//     origin: "http://localhost:5173",
-//     credentials: true,
-//   })
-// );
+app.use(
+  cors({
+    origin: "https://roadbuddies.onrender.com",
+    credentials: true,
+  })
+);
 
 app.get("/api/groups/:groupid/getPayingUser", async (req, res) => {
   const groupId = req.params.groupid;
