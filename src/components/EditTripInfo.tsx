@@ -18,12 +18,12 @@ function EditTripInfo() {
       if (error) {
         console.error("Error fetching trip:", error);
       } else if (data) {
-        setTrip(data);
+        setTrip(data[0]);
       }
     };
 
     fetchTrip();
-  }, [tripId]);
+  }, [tripId, supabase]);
 
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -38,7 +38,14 @@ function EditTripInfo() {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
+    if (trip){
+      const startDate = new Date(trip.start_date);
+      const endDate = new Date(trip.end_date);
+      if (startDate > endDate) {
+        alert("Start date must be before end date");
+        return;
+      }
+    }
     const { data, error } = await supabase
       .from("group")
       .update(trip)
@@ -64,8 +71,8 @@ function EditTripInfo() {
               Start Date:
               <Form.Control
                 type="date"
-                name="startDate"
-                value={trip.startDate}
+                name="start_date"
+                value={trip.start_date}
                 onChange={handleInputChange}
               />
             </Form.Label>
@@ -77,8 +84,8 @@ function EditTripInfo() {
               End Date:
               <Form.Control
                 type="date"
-                name="endDate"
-                value={trip.endDate}
+                name="end_date"
+                value={trip.end_date}
                 onChange={handleInputChange}
               />
             </Form.Label>

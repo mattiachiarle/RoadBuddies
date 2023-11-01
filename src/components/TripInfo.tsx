@@ -4,29 +4,42 @@ import { Trip } from "../utils/types";
 import "../utils/css/tripInfo.css";
 import { useParams } from "react-router-dom";
 
-function TripInfo() {
+function TripInfo({ email }) {
   const supabase = useContext(AppContext);
   const [trip, setTrip] = useState<Trip | null>(null);
-
+  const [participants, setParticipants] = useState<Array<string>>([]);
   const { tripId } = useParams();
+
 
   useEffect(() => {
     const fetchTrip = async () => {
-      const { data, error } = await supabase
+      const { data: tripData, error: tripError } = await supabase
         .from("group")
         .select("*")
         .eq("id", tripId)
         .single();
 
-      if (error) {
-        console.error("Error fetching trip:", error);
-      } else if (data) {
-        setTrip(data);
+      if (tripError) {
+        console.error("Error fetching trip:", tripError);
+      } else if (tripData) {
+        setTrip(tripData);
       }
-    };
+      const { data: participantData, error: participantError } = await supabase
+      .from("trips")
+      .select("user_id")
+      .eq("group_id", tripId);
 
-    fetchTrip();
-  }, []);
+    if (participantError) {
+      console.error("Error fetching participants:", participantError);
+    } else if (participantData) {
+      // Assuming that the user_id is the participant
+      const participants = participantData.map((participant) => participant.user_id);
+      setParticipants(participants);
+    }
+  };
+
+  fetchTrip();
+}, [tripId, supabase, email]);
 
   if (!trip) {
     return <div>Loading...</div>;
@@ -36,10 +49,10 @@ function TripInfo() {
     <div className="trip-info">
       <h2>Trip Information</h2>
       <div>
-        <strong>Start Date:</strong> {new Date(trip.startDate).toDateString()}
+        <strong>Start Date:</strong> {new Date(trip.start_date).toDateString()}
       </div>
       <div>
-        <strong>End Date:</strong> {new Date(trip.endDate).toDateString()}
+        <strong>End Date:</strong> {new Date(trip.end_date).toDateString()}
       </div>
       <div>
         <strong>Vehicle:</strong> {trip.vehicle}
@@ -47,8 +60,8 @@ function TripInfo() {
       <div>
         <strong>Participants:</strong>
         <ul>
-          {trip.participants?.map((participant) => (
-            <li key={participant}>{participant}</li>
+          {participants ?.map((participant) => (
+            <li style={ participant === email ? {textDecoration: "underline"} : {}} key={participant}>{participant}</li>
           ))}
         </ul>
       </div>

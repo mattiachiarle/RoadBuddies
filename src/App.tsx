@@ -51,7 +51,7 @@ function App() {
                   <Route path="/trips/:tripId/" element={<Trip />}>
                     {" "}
                     {/*here the trip sidebar?*/}
-                    <Route index element={<TripInfo />} />
+                    <Route index element={<TripInfo email={email}/>} />
                     <Route
                       path="editParticipants"
                       element={<EditParticipants />}
@@ -60,7 +60,7 @@ function App() {
                     <Route path="editInfo" element={<EditTripInfo />} />{" "}
                     <Route path="chat" element={<Chat email={email} />} />{" "}
                     {/*here the edit form?*/}
-                    <Route path="editToDo" element={<EditToDo />} />{" "}
+                    <Route path="editToDo" element={<EditToDo email={email} />} />{" "}
                     {/*here the edit route?*/}
                   </Route>
                   <Route
