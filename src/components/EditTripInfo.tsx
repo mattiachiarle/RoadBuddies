@@ -3,8 +3,10 @@ import AppContext from "../context/appContext";
 import { Trip } from "../utils/types";
 import { useParams } from "react-router-dom";
 import { Button, Row, Col, Form } from "react-bootstrap";
-
+import { useNavigate } from 'react-router-dom';
+import * as dayjs from "dayjs"
 function EditTripInfo() {
+  const navigate = useNavigate();
   const supabase = useContext(AppContext);
   const [trip, setTrip] = useState<Trip | null>();
   const { tripId } = useParams();
@@ -39,8 +41,8 @@ function EditTripInfo() {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (trip){
-      const startDate = new Date(trip.start_date);
-      const endDate = new Date(trip.end_date);
+      const startDate = dayjs(trip.start_date);
+      const endDate = dayjs(trip.end_date);
       if (startDate > endDate) {
         alert("Start date must be before end date");
         return;
@@ -56,6 +58,7 @@ function EditTripInfo() {
     } else if (data) {
       console.log("Trip updated successfully:", data);
     }
+    navigate(`/trips/${tripId}`);
   };
 
   if (!trip) {
@@ -86,6 +89,32 @@ function EditTripInfo() {
                 type="date"
                 name="end_date"
                 value={trip.end_date}
+                onChange={handleInputChange}
+              />
+            </Form.Label>
+          </Form.Group>
+        </Col>
+        <Col>
+          <Form.Group>
+            <Form.Label>
+              Start Location:
+              <Form.Control
+                type="text"
+                name="start"
+                value={trip.start}
+                onChange={handleInputChange}
+              />
+            </Form.Label>
+          </Form.Group>
+        </Col>
+        <Col>
+          <Form.Group>
+            <Form.Label>
+              Destination:
+              <Form.Control
+                type="text"
+                name="destination"
+                value={trip.destination}
                 onChange={handleInputChange}
               />
             </Form.Label>

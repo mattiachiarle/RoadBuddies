@@ -9,6 +9,8 @@ export type Trip = {
   start_date: string;
   end_date: string;
   vehicle: string;
+  start: string;
+  destination: string;
 };
 export type Todo = {
   id: number;

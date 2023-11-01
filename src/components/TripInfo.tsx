@@ -3,7 +3,7 @@ import AppContext from "../context/appContext";
 import { Trip } from "../utils/types";
 import "../utils/css/tripInfo.css";
 import { useParams } from "react-router-dom";
-
+import * as dayjs from "dayjs"
 function TripInfo({ email }) {
   const supabase = useContext(AppContext);
   const [trip, setTrip] = useState<Trip | null>(null);
@@ -49,10 +49,16 @@ function TripInfo({ email }) {
     <div className="trip-info">
       <h2>Trip Information</h2>
       <div>
-        <strong>Start Date:</strong> {new Date(trip.start_date).toDateString()}
+        <strong>Start Date:</strong> {dayjs(trip.start_date).format('MMMM D, YYYY')}
       </div>
       <div>
-        <strong>End Date:</strong> {new Date(trip.end_date).toDateString()}
+        <strong>End Date:</strong> {dayjs(trip.end_date).format('MMMM D, YYYY')}
+      </div>
+      <div>
+        <strong>Start location:</strong>{trip.start}
+      </div>
+      <div>
+        <strong>Destination:</strong> {trip.destination}
       </div>
       <div>
         <strong>Vehicle:</strong> {trip.vehicle}

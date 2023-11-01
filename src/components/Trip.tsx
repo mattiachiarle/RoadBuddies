@@ -26,6 +26,16 @@ function Trip() {
                           Edit To-Do
                       </Button>
                   </Row>
+                  <Row>
+                      <Button onClick={() => navigate(`editParticipants`)} variant="primary" style={{ border: '1px solid black' }}>
+                          Edit Participants
+                      </Button>
+                  </Row>
+                  <Row>
+                      <Button onClick={() => navigate(``)} variant="primary" style={{ border: '1px solid black' }}>
+                          Info
+                      </Button>
+                  </Row>
 
               </div>
           </Col>
