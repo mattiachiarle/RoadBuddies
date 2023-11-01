@@ -8,6 +8,8 @@
 
 **Alessandro Martinolli** (amart409@uic.edu)
 
+Live version of the website: https://roadbuddies.onrender.com/
+
 ## **Architecture**
 
 ### **[Excalidraw Schema](https://excalidraw.com/#room=f10af5de26ece127e176,UnIVdGmzzvY2r0Riw1S62Q)**
@@ -33,7 +35,7 @@
   - Help determine who's responsible for the next payment.
 - **Spotify**:
   - Facilitate the creation of shared playlists.
-- ******\*\*******\*\*\*\*******\*\*******Google Calendar:******\*\*******\*\*\*\*******\*\*******
+- **\*\***\*\***\*\***\*\*\*\***\*\***\*\***\*\***Google Calendar:**\*\***\*\***\*\***\*\*\*\***\*\***\*\***\*\***
   - Share itineraries
 - **PayPal** (Potential inclusion):
   - Enable monetary exchanges between members.
