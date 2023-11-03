@@ -10,6 +10,15 @@
 
 Live version of the website: https://roadbuddies.onrender.com/
 
+To use the website, you can use the following credentials:
+
+email: test@uic.edu
+password: password
+
+Trip 1 already contains some data, while Trip 2 is clean.
+
+There are also other users (test2@uic.edu, test3@uic.edu, test4@uic.edu, test5@uic.edu), that use the same password.
+
 ## **Architecture**
 
 ### **[Excalidraw Schema](https://excalidraw.com/#room=f10af5de26ece127e176,UnIVdGmzzvY2r0Riw1S62Q)**
@@ -58,7 +67,7 @@ Our project consists in an agumented Group DefaultLayout Application.
 **Base setup of the application**
 
 - The user will be able to Sign up and Sign in into the application.
-- The user will be able to create a new DefaultLayout, adding the starting point, the destination, the dates and the partecipants.
+- The user will be able to create a new DefaultLayout, adding the starting point, the destination, the dates and the partecipants (you can add the participants from the "Edit participants" page).
 
 **DefaultLayout manager**
 

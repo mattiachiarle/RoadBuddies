@@ -14,6 +14,7 @@ import AddTransaction from "./components/AddTransaction.tsx";
 
 import AppContext, { AppContextProvider } from "./context/appContext.tsx";
 import { useContext, useEffect, useState } from "react";
+import CreateTrip from "./components/CreateTrip.tsx";
 
 function App() {
   const [email, setEmail] = useState("");
@@ -47,6 +48,10 @@ function App() {
                   <Route
                     path="/"
                     element={<DefaultLayout userEmail={email} />}
+                  />{" "}
+                  <Route
+                    path="/createTrip"
+                    element={<CreateTrip email={email} />}
                   />{" "}
                   {/*here the list of trips?*/}
                   <Route path="/trips/:tripId/" element={<Trip />}>

@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Row, Col, Card } from "react-bootstrap";
+import { Row, Col, Card, Button } from "react-bootstrap";
 import AppContext from "../context/appContext";
 import { useNavigate } from "react-router-dom";
 
@@ -27,7 +27,7 @@ function DefaultLayout(props: { userEmail: string }) {
             tripsData.map((trip: { group: { id: number; name: string } }) => ({
               id: trip.group.id,
               name: trip.group.name,
-            })),
+            }))
           );
         } catch (error) {
           console.error("Error fetching trips:", error);
@@ -59,6 +59,15 @@ function DefaultLayout(props: { userEmail: string }) {
             <p>No trips found.</p>
           )}
         </Col>
+      </Row>
+      <Row>
+        <Button
+          onClick={() => {
+            navigate(`/createTrip`);
+          }}
+        >
+          Add Trip
+        </Button>
       </Row>
     </>
   );

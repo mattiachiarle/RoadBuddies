@@ -1,31 +1,23 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import AppContext from "../context/appContext";
 import { Trip } from "../utils/types";
-import { useParams } from "react-router-dom";
 import { Button, Row, Col, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
-function EditTripInfo() {
+
+function CreateTrip({ email }) {
   const navigate = useNavigate();
   const supabase = useContext(AppContext);
-  const [trip, setTrip] = useState<Trip | null>();
-  const { tripId } = useParams();
-  useEffect(() => {
-    const fetchTrip = async () => {
-      const { data, error } = await supabase
-        .from("group")
-        .select("*")
-        .eq("id", tripId);
-
-      if (error) {
-        console.error("Error fetching trip:", error);
-      } else if (data) {
-        setTrip(data[0]);
-      }
-    };
-
-    fetchTrip();
-  }, [tripId, supabase]);
+  const [trip, setTrip] = useState<Trip>({
+    id: 0,
+    description: "",
+    name: "",
+    start_date: "",
+    end_date: "",
+    vehicle: "",
+    start: "",
+    destination: "",
+  });
 
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -48,26 +40,61 @@ function EditTripInfo() {
         return;
       }
     }
-    const { data, error } = await supabase
+    let { data, error } = await supabase
       .from("group")
-      .update(trip)
-      .eq("id", tripId);
+      .insert({
+        description: trip?.description,
+        name: trip?.name,
+        start_date: trip?.start_date,
+        end_date: trip?.end_date,
+        vehicle: trip?.vehicle,
+        start: trip?.start,
+        destination: trip?.destination,
+      })
+      .select();
 
     if (error) {
-      console.error("Error updating trip:", error);
+      console.error("Error inserting trip:", error);
     } else if (data) {
-      console.log("Trip updated successfully:", data);
+      console.log("Trip inserted successfully:", data);
     }
-    navigate(`/trips/${tripId}`);
-  };
 
-  if (!trip) {
-    return <div>Loading...</div>;
-  }
+    const tripId = data[0].id;
+
+    await supabase.from("trips").insert([{ group_id: tripId, user_id: email }]);
+
+    navigate(`/`);
+  };
 
   return (
     <Form onSubmit={handleSubmit}>
       <Row>
+        <Col>
+          <Form.Group>
+            <Form.Label>
+              Name:
+              <Form.Control
+                type="text"
+                name="name"
+                value={trip.name}
+                onChange={handleInputChange}
+              />
+            </Form.Label>
+          </Form.Group>
+        </Col>
+        <Col>
+          <Form.Group>
+            <Form.Label>
+              Description:
+              <Form.Control
+                type="text"
+                name="description"
+                value={trip.description}
+                onChange={handleInputChange}
+              />
+            </Form.Label>
+          </Form.Group>
+        </Col>
         <Col>
           <Form.Group>
             <Form.Label>
@@ -94,6 +121,8 @@ function EditTripInfo() {
             </Form.Label>
           </Form.Group>
         </Col>
+      </Row>
+      <Row>
         <Col>
           <Form.Group>
             <Form.Label>
@@ -150,4 +179,4 @@ function EditTripInfo() {
   );
 }
 
-export default EditTripInfo;
+export default CreateTrip;
