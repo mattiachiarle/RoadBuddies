@@ -18,6 +18,7 @@ function Register() {
       const { error } = await supabase.auth.signUp({
         email: email,
         password: password,
+        disableEmailConfirmation: true,
       });
       insertUser(email);
       if (error) {
