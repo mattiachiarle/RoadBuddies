@@ -15,8 +15,8 @@ const api_key = process.env.CHAT_GPT_API;
 const spotify_client_id = process.env.SPOTIFY_CLIENT_ID;
 const spotify_client_secret = process.env.SPOTIFY_CLIENT_SECRET;
 console.log(spotify_client_secret);
-// const redirect_url = "https://roadbuddies-backend.onrender.com/api/callback";
-const redirect_url = "http://localhost:3000/api/callback";
+const redirect_url = "https://roadbuddies-backend.onrender.com/api/callback";
+// const redirect_url = "http://localhost:3000/api/callback";
 
 const gpt = new EasyGPT();
 gpt.setApiKey(api_key);
