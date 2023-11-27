@@ -10,6 +10,7 @@ import { createClient } from "@supabase/supabase-js";
 import querystring from "querystring";
 import request from "request";
 
+import oauth2Client from "./googleAuth.js";
 const api_key = process.env.CHAT_GPT_API;
 const spotify_client_id = process.env.SPOTIFY_CLIENT_ID;
 const spotify_client_secret = process.env.SPOTIFY_CLIENT_SECRET;
@@ -209,7 +210,36 @@ app.get("/api/groups/:groupid/getPayingUser", async (req, res) => {
 
   res.json({ user: response.content });
 });
+//Google Docs stuff
+app.get("/auth/google", (req, res) => {
+  const authUrl = oauth2Client.generateAuthUrl({
+    access_type: "offline",
+    scope: ["https://www.googleapis.com/auth/calendar"],
+  });
+  res.redirect(authUrl);
+});
+app.get("/auth/google/callback", async (req, res) => {
+  const { code } = req.query; // Get the authorization code from the query string
 
+  if (code) {
+    try {
+      // Exchange the code for tokens
+      const { tokens } = await oauth2Client.getToken(code);
+      oauth2Client.setCredentials(tokens);
+
+      // Now you can use these tokens to access Google services
+      // You might want to store them for later use
+
+      // Redirect the user or send a response
+      res.redirect("http://localhost:5173/");
+    } catch (error) {
+      console.error("Error exchanging code for tokens", error);
+      res.status(500).send("Authentication error");
+    }
+  } else {
+    res.status(400).send("Invalid request, authorization code is missing");
+  }
+});
 const generateRandomString = (length) => {
   let result = "";
   const characters =
