@@ -47,14 +47,18 @@ function Spotify() {
       description,
       localStorage.getItem("spotify_access_token")
     );
-    const { data, error } = await supabase
-      .from("group")
-      .update({ spotify_playlist: url })
-      .eq("id", tripId);
-    if (error) {
-      console.error("Error updating playlist:", error);
+    if (!url) {
+      clearSpotifyTokens();
     } else {
-      setPlaylist(url);
+      const { data, error } = await supabase
+        .from("group")
+        .update({ spotify_playlist: url })
+        .eq("id", tripId);
+      if (error) {
+        console.error("Error updating playlist:", error);
+      } else {
+        setPlaylist(url);
+      }
     }
   };
 
