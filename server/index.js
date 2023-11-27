@@ -106,7 +106,8 @@ app.get("/api/callback", async (req, res) => {
       console.log(body);
       var access_token = body.access_token;
       var refresh_token = body.refresh_token;
-      let uri = "http://localhost:5173";
+      // let uri = "http://localhost:5173";
+      let uri = "https://roadbuddies.onrender.com";
       res.redirect(
         uri +
           "?access_token=" +
@@ -141,7 +142,8 @@ app.get("/api/refresh_token", function (req, res) {
     console.log(body);
     var access_token = body.access_token;
     var refresh_token = body.refresh_token;
-    let uri = "http://localhost:5173";
+    // let uri = "http://localhost:5173";
+    let uri = "https://roadbuddies.onrender.com";
     res.redirect(
       uri + "?access_token=" + access_token + "&refresh_token=" + refresh_token
     );
