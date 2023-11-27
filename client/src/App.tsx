@@ -15,6 +15,7 @@ import AddTransaction from "./components/AddTransaction.tsx";
 import AppContext, { AppContextProvider } from "./context/appContext.tsx";
 import { useContext, useEffect, useState } from "react";
 import CreateTrip from "./components/CreateTrip.tsx";
+import Spotify from "./components/Spotify.tsx";
 
 function App() {
   const [email, setEmail] = useState("");
@@ -23,6 +24,7 @@ function App() {
   useEffect(() => {
     const getSession = async () => {
       const session = await supabase.auth.getSession();
+      console.log(session);
       if (session.data.session != undefined) {
         setEmail(session.data.session.user.email);
       }
@@ -72,6 +74,7 @@ function App() {
                     />{" "}
                     <Route path="addTransaction" element={<AddTransaction />} />{" "}
                     {/*here the edit route?*/}
+                    <Route path="spotify" element={<Spotify />} />{" "}
                   </Route>
                   <Route
                     path="/login"
