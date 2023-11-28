@@ -110,9 +110,9 @@ app.get("/api/callback", async (req, res) => {
       let uri = "https://roadbuddies.onrender.com";
       res.redirect(
         uri +
-          "?access_token=" +
+          "?spotify_access_token=" +
           access_token +
-          "&refresh_token=" +
+          "&spotify_refresh_token=" +
           refresh_token
       );
     });
