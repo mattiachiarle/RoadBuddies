@@ -6,9 +6,11 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 function DefaultLayout(props: { userEmail: string }) {
   const [trips, setTrips] = useState([]);
   const { userEmail } = props;
-  const [url, setUrl] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
-  const [showSpotify, setShowSpotify] = useState(false);
+
+  // Initialize Supabase client
+  const supabase = useContext(AppContext);
+  const navigate = useNavigate();
 
   if (searchParams.get("spotify_access_token")) {
     localStorage.setItem(
@@ -19,11 +21,10 @@ function DefaultLayout(props: { userEmail: string }) {
       "spotify_refresh_token",
       searchParams.get("spotify_refresh_token")
     );
+    const tripId = localStorage.getItem("spotify_trip_id");
+    localStorage.removeItem("spotify_trip_id");
+    navigate(`/trips/${tripId}/spotify`);
   }
-
-  // Initialize Supabase client
-  const supabase = useContext(AppContext);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTrips = async () => {
