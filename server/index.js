@@ -145,7 +145,11 @@ app.get("/api/refresh_token", function (req, res) {
     // let uri = "http://localhost:5173";
     let uri = "https://roadbuddies.onrender.com";
     res.redirect(
-      uri + "?access_token=" + access_token + "&refresh_token=" + refresh_token
+      uri +
+        "?spotify_access_token=" +
+        access_token +
+        "&spotify_refresh_token=" +
+        refresh_token
     );
   });
 });

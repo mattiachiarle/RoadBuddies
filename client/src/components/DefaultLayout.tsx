@@ -10,14 +10,14 @@ function DefaultLayout(props: { userEmail: string }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [showSpotify, setShowSpotify] = useState(false);
 
-  if (searchParams.get("access_token")) {
+  if (searchParams.get("spotify_access_token")) {
     localStorage.setItem(
       "spotify_access_token",
-      searchParams.get("access_token")
+      searchParams.get("spotify_access_token")
     );
     localStorage.setItem(
       "spotify_refresh_token",
-      searchParams.get("refresh_token")
+      searchParams.get("spotify_refresh_token")
     );
   }
 
