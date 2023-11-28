@@ -2,12 +2,13 @@ import { useContext, useEffect, useState } from "react";
 import AppContext from "../context/appContext";
 import { Trip } from "../utils/types";
 import { useParams } from "react-router-dom";
-import { Button, Row, Col, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
+import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 function EditTripInfo() {
   const navigate = useNavigate();
   const supabase = useContext(AppContext);
+  const [error, setError] = useState<boolean>(false);
   const [trip, setTrip] = useState<Trip | null>();
   const { tripId } = useParams();
   useEffect(() => {
@@ -26,10 +27,10 @@ function EditTripInfo() {
 
     fetchTrip();
   }, [tripId, supabase]);
-
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
+    setError(false);
     if (trip) {
       setTrip({
         ...trip,
@@ -44,7 +45,7 @@ function EditTripInfo() {
       const startDate = dayjs(trip.start_date);
       const endDate = dayjs(trip.end_date);
       if (startDate > endDate) {
-        alert("Start date must be before end date");
+        setError(true);
         return;
       }
     }
@@ -66,87 +67,27 @@ function EditTripInfo() {
   }
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <Row>
-        <Col>
-          <Form.Group>
-            <Form.Label>
-              Start Date:
-              <Form.Control
-                type="date"
-                name="start_date"
-                value={trip.start_date}
-                onChange={handleInputChange}
-              />
-            </Form.Label>
-          </Form.Group>
-        </Col>
-        <Col>
-          <Form.Group>
-            <Form.Label>
-              End Date:
-              <Form.Control
-                type="date"
-                name="end_date"
-                value={trip.end_date}
-                onChange={handleInputChange}
-              />
-            </Form.Label>
-          </Form.Group>
-        </Col>
-        <Col>
-          <Form.Group>
-            <Form.Label>
-              Start Location:
-              <Form.Control
-                type="text"
-                name="start"
-                value={trip.start}
-                onChange={handleInputChange}
-              />
-            </Form.Label>
-          </Form.Group>
-        </Col>
-        <Col>
-          <Form.Group>
-            <Form.Label>
-              Destination:
-              <Form.Control
-                type="text"
-                name="destination"
-                value={trip.destination}
-                onChange={handleInputChange}
-              />
-            </Form.Label>
-          </Form.Group>
-        </Col>
-        <Col>
-          <Form.Group>
-            <Form.Label>
-              Vehicle:
-              <Form.Select
-                name="vehicle"
-                onChange={(
-                  event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-                ) => handleInputChange(event)}
-                value={trip.vehicle}
-              >
-                <option>{trip.vehicle}</option>
-                <option>Car</option>
-                <option>Motorbike</option>
-                <option>Bicycle</option>
-                <option>On foot</option>
-                <option>Airplane</option>
-                <option>Train</option>
-              </Form.Select>
-            </Form.Label>
-          </Form.Group>
-        </Col>
-      </Row>
-      <Button type="submit" value="Update Trip">
-        Submit
-      </Button>
-    </Form>
+    <>
+      <div style={{display:"flex", flexDirection:"column", gap:"1rem"}}>
+        <div style ={{display:"flex", flexDirection:"row", gap:"2rem"}}>     
+          <Input type="date" name="start_date" value={trip.start_date} isInvalid={error} label="Start Date" onChange={handleInputChange}/>
+          <Input type="date" name="end_date" value={trip.end_date} isInvalid={error} errorMessage={error && "Start date must be before end date"} label="End Date" onChange={handleInputChange}/>
+        </div>
+        <div style ={{display:"flex", flexDirection:"row", gap:"2rem"}}>
+          <Input type="text" name="start" value={trip.start} label="Start Location" onChange={handleInputChange}/>
+          <Input type="text" name="destination" label="Destination" onChange={handleInputChange}/>
+        </div>
+          <Select label="Vehicle" name="vehicle" defaultSelectedKeys={[trip.vehicle]} onChange={(event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => handleInputChange(event)}>
+            <SelectItem key="Car" value="Car" style={{color:"white"}}>Car</SelectItem>
+            <SelectItem key="Motorbike" value="Motorbike" style={{color:"white"}}>Motorbike</SelectItem>
+            <SelectItem key="Bicycle" value="Bicycle" style={{color:"white"}} >Bicycle</SelectItem>
+            <SelectItem key="On foot" value="On foot" style={{color:"white"}}>On foot</SelectItem>
+            <SelectItem key="Airplane" value="Airplane" style={{color:"white"}}>Airplane</SelectItem>
+            <SelectItem key="Train" value="Train" style={{color:"white"}}>Train</SelectItem>
+          </Select>
+        <Button onClick={handleSubmit} value="Update Trip">Submit</Button>
+      </div>
+    </>
   );
 }
 

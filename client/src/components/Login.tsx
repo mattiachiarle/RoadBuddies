@@ -1,12 +1,14 @@
 import AppContext from "../context/appContext";
-import { Button, Card, Form } from "react-bootstrap";
+import {  CardFooter, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { Button, Card, CardBody, CardHeader, Divider, Input } from "@nextui-org/react";
 
 function Login({ email, updateEmail }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [invalid, setInvalid] = useState(false); // [1
   const [err, setErr] = useState("");
   const navigate = useNavigate();
   const supabase = useContext(AppContext);
@@ -37,6 +39,7 @@ function Login({ email, updateEmail }) {
     } catch (error) {
       console.log(error);
       setErr(error.message);
+      setInvalid(true);
       toast.error(error.message);
     }
   };
@@ -49,58 +52,25 @@ function Login({ email, updateEmail }) {
 
   return (
     <>
-      {err && (
-        <Card style={{ backgroundColor: "lightblue" }}>
-          <Card.Body>
-            <Card.Title style={{ color: "red" }}>
-              Invalid username or password
-            </Card.Title>
-            <Card.Text
-              style={{ color: "blue" }}
-              onClick={() => {
-                setErr("");
-                navigate("/login");
-              }}
-            >
-              Try again
-            </Card.Text>
-          </Card.Body>
+      <div className = "login"  style={{display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh", flexDirection:"column"}}>
+        <Card>
+          <CardHeader style={{ justifyContent:"center"}}>
+            <h1>RoadBuddies</h1>
+          </CardHeader>
+          <Divider/>
+          <CardBody>
+            <div className="flex w-full flex-wrap sd:flex-nowrap gap-3">
+              <Input type="email" value={username} isInvalid={invalid} label="Email" onChange={(ev)=>{setUsername(ev.target.value)}} placeholder="email"/>
+              <Input type="password" isInvalid={invalid} errorMessage={invalid && "invalid username or password"} value={password} label="Password" onChange={(ev)=>{setPassword(ev.target.value)}} placeholder="password"/>
+            </div>
+            </CardBody>
+            <CardFooter style={{padding:"15px"}} className="flex w-full flex-wrap sd:flex-nowrap gap-3">
+              <Button  type="submit" onClick={onSubmit}>Submit</Button>
+              <Button onClick={() => navigate("/")}>Cancel</Button>
+              <Button onClick={() => navigate("/register")}>Register</Button>
+            </CardFooter>
         </Card>
-      )}
-      <Form onSubmit={onSubmit}>
-        <Form.Group className="mb-3">
-          <Form.Label>Username</Form.Label>
-          <Form.Control
-            type="email"
-            value={username}
-            onChange={(ev) => {
-              setUsername(ev.target.value);
-            }}
-          />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            value={password}
-            onChange={(ev) => {
-              setPassword(ev.target.value);
-            }}
-            onKeyPress={submitWhenEnter}
-          />
-        </Form.Group>
-        <Form.Group>
-          <Button variant="success" type="submit" onClick={onSubmit}>
-            SUBMIT
-          </Button>{" "}
-          <Button variant="success" onClick={() => navigate("/")}>
-            CANCEL
-          </Button>{" "}
-        </Form.Group>
-      </Form>
-      <Button variant="primary" onClick={() => navigate("/register")}>
-        Register
-      </Button>
+      </div>
     </>
   );
 }

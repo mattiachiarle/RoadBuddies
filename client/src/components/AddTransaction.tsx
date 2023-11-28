@@ -1,12 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import AppContext from "../context/appContext";
 import { useParams } from "react-router-dom";
-import { Button, Dropdown, Form } from "react-bootstrap";
+import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 
 function AddTransaction() {
   const supabase = useContext(AppContext);
   const [participants, setParticipants] = useState([]);
-  const [user, setUser] = useState([]);
+  const [user, setUser] = useState<string>("");
   const [amount, setAmount] = useState(0);
   const { tripId } = useParams();
 
@@ -22,7 +22,6 @@ function AddTransaction() {
         setParticipants(data.map((item) => item.user_id));
       }
     };
-
     fetchParticipants();
   }, [supabase, tripId]);
 
@@ -40,15 +39,43 @@ function AddTransaction() {
       if (error) {
         console.log(error);
       }
-      setUser([]);
+      setUser("");
       setAmount(0);
     }
   };
 
   return (
-    <div>
-      <h2>Add transaction</h2>
-      <Form onSubmit={handleNewTransactionSubmit}>
+    <div style={{color:"white", display:"flex", flexDirection:"column", alignItems:"center", gap:"1rem"}}  >
+      <h2 >Add transaction</h2>
+      <div style={{display:"flex", flexDirection:"row"}}>
+        <Input 
+          type="number" 
+          placeholder="0,00" 
+          min="0"
+          variant="underlined"
+          value={amount}
+          onChange={handleAmountChange}
+          endContent={
+            <div className="pointer-events-none flex items-center">
+              <span className="text-default-400 text-small">$</span>
+            </div>
+          }
+         />
+      </div>
+      <span>Who paid?</span>
+        <Select 
+          label="Add Participant" 
+          className="max-w-xs"
+          onChange={(event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setUser(event.target.value)} 
+        >
+        {participants.map((user, index) => (
+            <SelectItem style={{color:"white"}} key={user} value={user}>
+              {user}
+            </SelectItem>
+          ))}
+        </Select>
+        <Button color="success" variant="ghost" onClick={handleNewTransactionSubmit}>Add</Button>
+      {/* <Form onSubmit={handleNewTransactionSubmit}>
         <Form.Group className="d-flex align-items-center">
           <Form.Label>
             User:
@@ -84,7 +111,7 @@ function AddTransaction() {
           </Form.Label>
           <Button type="submit">Add</Button>
         </Form.Group>
-      </Form>
+      </Form> */}
     </div>
   );
 }
