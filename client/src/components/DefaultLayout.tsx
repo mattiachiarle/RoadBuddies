@@ -21,9 +21,6 @@ function DefaultLayout(props: { userEmail: string }) {
       "spotify_refresh_token",
       searchParams.get("spotify_refresh_token")
     );
-    const tripId = localStorage.getItem("spotify_trip_id");
-    localStorage.removeItem("spotify_trip_id");
-    navigate(`/trips/${tripId}/spotify`);
   }
 
   useEffect(() => {

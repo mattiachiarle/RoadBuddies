@@ -42,7 +42,6 @@ function Spotify() {
 
   const createPlaylist = async (event) => {
     event.preventDefault(); // Prevent the default form submission
-    localStorage.setItem("spotify_trip_id", tripId);
     const url = await createSpotifyPlaylist(
       name,
       description,
