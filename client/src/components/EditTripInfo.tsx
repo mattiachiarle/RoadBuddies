@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+
 import AppContext from "../context/appContext";
 import { Trip } from "../utils/types";
 import { useParams } from "react-router-dom";

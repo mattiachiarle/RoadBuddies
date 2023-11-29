@@ -11,10 +11,13 @@ import Login from "./components/Login.tsx";
 import Register from "./components/Register.tsx";
 import Chat from "./components/Chat.tsx";
 import AddTransaction from "./components/AddTransaction.tsx";
-
+import CalendarComponent from "./components/CalendarComponent.tsx";
 import AppContext, { AppContextProvider } from "./context/appContext.tsx";
 import { useContext, useEffect, useState } from "react";
 import CreateTrip from "./components/CreateTrip.tsx";
+import CreateEventComponent from "./components/CreateEventComponent.tsx";
+import CalendarEventsComponent from "./components/CalendarEventsComponent.tsx";
+import Spotify from "./components/Spotify.tsx";
 
 function App() {
   const [email, setEmail] = useState("");
@@ -72,6 +75,10 @@ function App() {
                     />{" "}
                     <Route path="addTransaction" element={<AddTransaction />} />{" "}
                     {/*here the edit route?*/}
+                    <Route path="calendar" element={<CalendarComponent />} />
+                    <Route path="createEvent" element={<CreateEventComponent />} />
+                    <Route path="events" element={<CalendarEventsComponent />} />
+                    <Route path="spotify" element={<Spotify />} />{" "}
                   </Route>
                   <Route
                     path="/login"

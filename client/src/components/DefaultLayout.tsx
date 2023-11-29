@@ -1,19 +1,100 @@
 import { useContext, useEffect, useState } from "react";
 import { Row, Col, Button } from "react-bootstrap";
-import AppContext from "../context/appContext";
-import { useNavigate } from "react-router-dom";
 import Container from "./Container";
 import {Card, CardBody, CardHeader } from "@nextui-org/react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 function DefaultLayout(props: { userEmail: string }) {
   const [trips, setTrips] = useState([]);
   const { userEmail } = props;
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // Initialize Supabase client
   const supabase = useContext(AppContext);
   const navigate = useNavigate();
 
+  if (searchParams.get("spotify_access_token")) {
+    localStorage.setItem(
+      "spotify_access_token",
+      searchParams.get("spotify_access_token")
+    );
+    localStorage.setItem(
+      "spotify_refresh_token",
+      searchParams.get("spotify_refresh_token")
+    );
+  }
+
   useEffect(() => {
+    const removeTokenFromUrl = () => {
+      const newUrl = window.location.origin + window.location.pathname;
+      window.history.pushState("object", document.title, newUrl);
+    };
+
+    const checkGoogleTokens = async () => {
+      // Extract tokens from URL
+      // const queryParams = new URLSearchParams(window.location.search);
+      const accessToken = searchParams.get("accessToken");
+      const refreshToken = searchParams.get("refreshToken");
+
+      if (accessToken) {
+        localStorage.setItem("google_access_token", accessToken);
+      }
+      if (refreshToken) {
+        localStorage.setItem("google_refresh_token", refreshToken);
+      }
+
+      const local_refresh_token = localStorage.getItem("google_refresh_token");
+
+      if (local_refresh_token && userEmail) {
+        const { error } = await supabase
+          .from("user")
+          .update([{ google_refresh_token: local_refresh_token }])
+          .eq("user_id", userEmail);
+
+        if (error) {
+          console.log("Supabase error: " + error);
+        }
+      } else {
+        const { data } = await supabase
+          .from("user")
+          .select("google_refresh_token")
+          .eq("user_id", userEmail);
+        if (data && data[0] && data[0].google_refresh_token) {
+          localStorage.setItem(
+            "google_refresh_token",
+            data[0].google_refresh_token
+          );
+        }
+      }
+      // if (accessToken && userEmail) {
+      //   // Store tokens and remove from URL
+      //   localStorage.setItem("google_access_token", accessToken);
+      //   if (refreshToken) {
+      //     console.log(userEmail);
+      //     console.log(refreshToken);
+      //     const { data, error } = await supabase
+      //       .from("user")
+      //       .update([{ google_refresh_token: refreshToken }])
+      //       .eq("user_id", userEmail)
+      //       .select();
+      //     localStorage.setItem("google_refresh_token", refreshToken);
+      //     // if (error) {
+      //     console.log(data);
+      //     console.log("Supabase error " + error);
+      //     // }
+      //   } else {
+      //     const refresh_token = await supabase
+      //       .from("user")
+      //       .select("google_refresh_token")
+      //       .eq("user_id", userEmail);
+      //     localStorage.setItem(
+      //       "google_refresh_token",
+      //       refresh_token.google_refresh_token
+      //     );
+      //   }
+      removeTokenFromUrl();
+      // }
+    };
     const fetchTrips = async () => {
       if (userEmail) {
         try {
@@ -40,7 +121,8 @@ function DefaultLayout(props: { userEmail: string }) {
     };
 
     fetchTrips();
-  }, [userEmail, supabase, navigate]);
+    checkGoogleTokens();
+  }, [userEmail]);
 
   return (
     <>

@@ -24,12 +24,14 @@
     "dotenv": "^16.3.1",
     "easygpt": "^1.6.2",
     "express": "^4.18.2",
+    "googleapis": "^128.0.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.9.1",
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.7",
     "react-router-dom": "^6.17.0",
-    "react-toastify": "^9.1.3"
+    "react-toastify": "^9.1.3",
+    "request": "^2.88.2"
   },
   "devDependencies": {
     "@types/react": "^18.2.33",
