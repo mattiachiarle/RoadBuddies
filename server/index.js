@@ -156,7 +156,6 @@ app.get("/api/refresh_token", function (req, res) {
 
 app.get("/api/groups/:groupid/getPayingUser", async (req, res) => {
   const groupId = req.params.groupid;
-  console.log(groupId);
 
   const { data, error } = await supabase
     .from("transactions")
@@ -215,6 +214,55 @@ app.get("/api/groups/:groupid/getPayingUser", async (req, res) => {
   const response = await gpt.ask();
 
   res.json({ user: response.content });
+});
+
+app.get("/api/groups/:groupid/getUpdatedTodo", async (req, res) => {
+  const groupId = req.params.groupid;
+
+  let todo;
+  let destination;
+
+  {
+    const { data, error } = await supabase
+      .from("todo")
+      .select("content")
+      .eq("group_id", groupId);
+
+    console.log(data);
+
+    todo = data.map((t) => t.content);
+
+    if (error) {
+      res.status(400).send("Error while retrieving data from the DB: " + error);
+    }
+  }
+
+  {
+    const { data, error } = await supabase
+      .from("group")
+      .select("destination")
+      .eq("id", groupId);
+
+    console.log(data);
+
+    destination = data[0].destination;
+
+    if (error) {
+      res.status(400).send("Error while retrieving data from the DB: " + error);
+    }
+  }
+
+  let message = `Hi! We are doing a trip to ${destination}. We currently have the following list of things to bring/do:\n`;
+
+  todo.forEach((t) => (message += `${t}\n`));
+
+  message += "In your opinion, are we missing anything?";
+
+  gpt.addMessage(message);
+
+  const response = await gpt.ask();
+
+  res.json({ todo: response.content });
 });
 
 app.post("/api/askChatGpt", async (req, res) => {

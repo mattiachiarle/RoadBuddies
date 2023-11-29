@@ -18,6 +18,19 @@ async function getPayingUser(groupId) {
   }
 }
 
+async function getUpdatedTodo(groupId) {
+  const response = await fetch(url + `/api/groups/${groupId}/getUpdatedTodo`, {
+    method: "GET",
+  });
+  if (response.ok) {
+    const todos = await response.json();
+    return todos.todo;
+  } else {
+    const message = await response.text();
+    throw new Error(message);
+  }
+}
+
 async function queryChatGpt(message) {
   const response = await fetch(url + `/api/askChatGpt`, {
     method: "POST",
@@ -110,4 +123,10 @@ async function createSpotifyPlaylist(name, description, accessToken) {
   }
 }
 
-export { getPayingUser, spotifyLogin, createSpotifyPlaylist, queryChatGpt };
+export {
+  getPayingUser,
+  spotifyLogin,
+  createSpotifyPlaylist,
+  queryChatGpt,
+  getUpdatedTodo,
+};
