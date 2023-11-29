@@ -92,7 +92,7 @@ function DefaultLayout(props: { userEmail: string }) {
 
     fetchTrips();
     checkGoogleTokens();
-  }, [userEmail, supabase, navigate]);
+  }, [userEmail]);
 
   return (
     <>
