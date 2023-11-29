@@ -65,7 +65,7 @@ function DefaultLayout(props: { userEmail: string }) {
             refresh_token.google_refresh_token
           );
         }
-        removeTokenFromUrl();
+        // removeTokenFromUrl();
       }
     };
     const fetchTrips = async () => {
@@ -95,7 +95,7 @@ function DefaultLayout(props: { userEmail: string }) {
 
     fetchTrips();
     checkGoogleTokens();
-  }, [userEmail]);
+  }, [userEmail, navigate]);
 
   return (
     <>
