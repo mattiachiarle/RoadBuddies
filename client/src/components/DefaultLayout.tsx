@@ -31,9 +31,9 @@ function DefaultLayout(props: { userEmail: string }) {
 
     const checkGoogleTokens = async () => {
       // Extract tokens from URL
-      const queryParams = new URLSearchParams(window.location.search);
-      const accessToken = queryParams.get("accessToken");
-      const refreshToken = queryParams.get("refreshToken");
+      // const queryParams = new URLSearchParams(window.location.search);
+      const accessToken = searchParams.get("accessToken");
+      const refreshToken = searchParams.get("refreshToken");
 
       console.log(accessToken);
       console.log(refreshToken);
