@@ -58,8 +58,7 @@ function DefaultLayout(props: { userEmail: string }) {
           .from("user")
           .select("google_refresh_token")
           .eq("user_id", userEmail);
-        console.log(data);
-        if (data[0].google_refresh_token) {
+        if (data && data[0] && data[0].google_refresh_token) {
           localStorage.setItem(
             "google_refresh_token",
             data[0].google_refresh_token
