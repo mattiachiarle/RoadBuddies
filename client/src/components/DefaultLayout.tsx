@@ -37,6 +37,7 @@ function DefaultLayout(props: { userEmail: string }) {
 
       console.log(accessToken);
       console.log(refreshToken);
+      console.log(userEmail);
 
       // Store tokens and remove from URL
       if (accessToken) {
@@ -47,9 +48,9 @@ function DefaultLayout(props: { userEmail: string }) {
             .from("user")
             .update([{ google_refresh_token: refreshToken }])
             .eq("user_id", userEmail);
-          if (error) {
-            console.log("Supabase error " + error);
-          }
+          // if (error) {
+          console.log("Supabase error " + error);
+          // }
         } else {
           const refresh_token = await supabase
             .from("user")
