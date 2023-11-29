@@ -4,7 +4,7 @@ import { Message } from "../utils/types";
 import { Button, Form, Row } from "react-bootstrap";
 import "../utils/css/chat.css";
 import { useParams } from "react-router-dom";
-import { getPayingUser } from "../API.js";
+import { getPayingUser, queryChatGpt, getUpdatedTodo } from "../API.js";
 
 function Chat({ email }) {
   const [messages, setMessages] = useState<Array<Message>>([]);
@@ -48,7 +48,7 @@ function Chat({ email }) {
             user_id: res.new.user_id,
           };
           setMessages((messages: Array<Message>) => [...messages, newMessage]);
-        },
+        }
       );
 
       /**
@@ -132,11 +132,25 @@ function InputBox(props) {
           setMessage("");
         }
 
-        if (message == "@chatgpt who pays?") {
-          const payingUser = await getPayingUser(tripId);
+        // if (message == "@chatgpt who pays?") {
+        //   const payingUser = await getPayingUser(tripId);
+        //   const { error } = await supabase.from("messages").insert({
+        //     user_id: props.username,
+        //     content: payingUser,
+        //     group_id: props.group,
+        //   });
+        //   if (error) {
+        //     throw error;
+        //   }
+        // }
+
+        if (message.startsWith("@chatgpt")) {
+          const response_message = await queryChatGpt(
+            message.split("@chatgpt")[1]
+          );
           const { error } = await supabase.from("messages").insert({
             user_id: props.username,
-            content: payingUser,
+            content: response_message,
             group_id: props.group,
           });
           if (error) {
@@ -184,46 +198,92 @@ function InputBox(props) {
     }
   };
 
+  const askTodo = async () => {
+    try {
+      {
+        const { error } = await supabase.from("messages").insert({
+          user_id: props.username,
+          content: "@chatgpt what's missing from the todo list?",
+          group_id: props.group,
+        });
+
+        if (error) {
+          throw error;
+        } else {
+          setMessage("");
+        }
+      }
+
+      const todos = await getUpdatedTodo(tripId);
+      const { error } = await supabase.from("messages").insert({
+        user_id: props.username,
+        content: todos,
+        group_id: props.group,
+      });
+
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const changeMessage = (ev: React.ChangeEvent<HTMLInputElement>) => {
     setMessage(ev.target.value);
   };
   return (
-    <Form
-      className="input-container"
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSend(message);
-      }}
-    >
+    <>
+      <Form
+        className="input-container"
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSend(message);
+        }}
+      >
+        <Row>
+          <Form.Group className="mb-4">
+            <Form.Label></Form.Label>
+            <Form.Control
+              type="text"
+              value={message}
+              onChange={changeMessage}
+              placeholder="Type a message..."
+            />
+          </Form.Group>
+          <Form.Group>
+            <Button
+              variant="success"
+              onClick={() => {
+                onSend(message);
+              }}
+            >
+              Send
+            </Button>{" "}
+            <Button
+              onClick={() => {
+                askWhoPays();
+              }}
+            >
+              Who pays?
+            </Button>{" "}
+            <Button
+              onClick={() => {
+                askTodo();
+              }}
+            >
+              What's missing from the todo list?
+            </Button>
+          </Form.Group>
+        </Row>
+      </Form>
       <Row>
-        <Form.Group className="mb-4">
-          <Form.Label></Form.Label>
-          <Form.Control
-            type="text"
-            value={message}
-            onChange={changeMessage}
-            placeholder="Type a message..."
-          />
-        </Form.Group>
-        <Form.Group>
-          <Button
-            variant="success"
-            onClick={() => {
-              onSend(message);
-            }}
-          >
-            Send
-          </Button>{" "}
-          <Button
-            onClick={() => {
-              askWhoPays();
-            }}
-          >
-            Who pays?
-          </Button>
-        </Form.Group>
+        <div style={{ color: "GrayText" }}>
+          You can ask anything to chatgpt by writing a message starting with
+          @chatgpt in the chat!
+        </div>
       </Row>
-    </Form>
+    </>
   );
 }
 export default Chat;

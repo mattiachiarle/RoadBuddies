@@ -18,9 +18,15 @@ import cors from "cors";
 import EasyGPT from "easygpt";
 import "dotenv/config.js";
 import { createClient } from "@supabase/supabase-js";
+import querystring from "querystring";
+import request from "request";
 
 import oauth2Client from './googleAuth.js';
 const api_key = process.env.CHAT_GPT_API;
+const spotify_client_id = process.env.SPOTIFY_CLIENT_ID;
+const spotify_client_secret = process.env.SPOTIFY_CLIENT_SECRET;
+const redirect_url = "https://roadbuddies-backend.onrender.com/api/callback";
+// const redirect_url = "http://localhost:3000/api/callback";
 
 const gpt = new EasyGPT();
 gpt.setApiKey(api_key);
@@ -32,22 +38,135 @@ const supabase = createClient(
   process.env.VITE_SUPABASE_ANON_KEY
 );
 
-// app.use(
-//   cors({
-//     origin: "https://roadbuddies.onrender.com",
-//     credentials: true,
-//   })
-// );
 app.use(
-    cors({
-      origin:    "http://localhost:5173",
-      credentials: true,
-    })
+  cors({
+    origin: [
+      "https://roadbuddies.onrender.com",
+      "http://localhost:5173",
+      "http://localhost:3000",
+      "https://accounts.spotify.com",
+    ],
+    credentials: true,
+  })
 );
-app.use(express.json()); // This line is crucial for the body-parser to work
+
+app.use(express.json());
+
+app.get("/api/spotifyLogin", function (req, res) {
+  var state = generateRandomString(16);
+  var scope =
+    "user-read-private user-read-email playlist-modify-public playlist-modify-private";
+
+  res.redirect(
+    "https://accounts.spotify.com/authorize?" +
+      querystring.stringify({
+        response_type: "code",
+        client_id: spotify_client_id,
+        scope: scope,
+        redirect_uri: redirect_url,
+        state: state,
+      })
+  );
+});
+
+app.get("/api/callback", async (req, res) => {
+  var code = req.query.code || null;
+  var state = req.query.state || null;
+
+  if (state === null) {
+    res.redirect(
+      "/#" +
+        querystring.stringify({
+          error: "state_mismatch",
+        })
+    );
+  } else {
+    var authOptions = {
+      url: "https://accounts.spotify.com/api/token",
+      form: {
+        code: code,
+        redirect_uri: redirect_url,
+        grant_type: "authorization_code",
+      },
+      headers: {
+        "content-type": "application/x-www-form-urlencoded",
+        "Access-Control-Allow-Origin": "*",
+        Authorization:
+          "Basic " +
+          new Buffer.from(
+            spotify_client_id + ":" + spotify_client_secret
+          ).toString("base64"),
+      },
+      json: true,
+    };
+    // console.log(authOptions);
+    // fetch(authOptions.url, authOptions)
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     // Handle the response, which contains the access token
+    //     console.log(data);
+    //     res.json({
+    //       acces_token: data.access_token,
+    //       refresh_token: data.refresh_token,
+    //     });
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //     res.send("Error obtaining access token");
+    //   });
+    request.post(authOptions, function (error, response, body) {
+      var access_token = body.access_token;
+      var refresh_token = body.refresh_token;
+      // let uri = "http://localhost:5173";
+      let uri = "https://roadbuddies.onrender.com";
+      res.redirect(
+        uri +
+          "?spotify_access_token=" +
+          access_token +
+          "&spotify_refresh_token=" +
+          refresh_token
+      );
+    });
+  }
+});
+
+app.get("/api/refresh_token", function (req, res) {
+  var refresh_token = req.query.refresh_token;
+  var authOptions = {
+    url: "https://accounts.spotify.com/api/token",
+    headers: {
+      "content-type": "application/x-www-form-urlencoded",
+      Authorization:
+        "Basic " +
+        new Buffer.from(
+          spotify_client_id + ":" + spotify_client_secret
+        ).toString("base64"),
+    },
+    form: {
+      grant_type: "refresh_token",
+      refresh_token: refresh_token,
+    },
+    json: true,
+  };
+
+  request.post(authOptions, function (error, response, body) {
+    console.log(body);
+    var access_token = body.access_token;
+    var refresh_token = body.refresh_token;
+    // let uri = "http://localhost:5173";
+    let uri = "https://roadbuddies.onrender.com";
+    res.redirect(
+      uri +
+        "?spotify_access_token=" +
+        access_token +
+        "&spotify_refresh_token=" +
+        refresh_token
+    );
+  });
+});
+
 app.get("/api/groups/:groupid/getPayingUser", async (req, res) => {
   const groupId = req.params.groupid;
-  console.log(groupId);
 
   const { data, error } = await supabase
     .from("transactions")
@@ -107,6 +226,64 @@ app.get("/api/groups/:groupid/getPayingUser", async (req, res) => {
 
   res.json({ user: response.content });
 });
+
+app.get("/api/groups/:groupid/getUpdatedTodo", async (req, res) => {
+  const groupId = req.params.groupid;
+
+  let todo;
+  let destination;
+
+  {
+    const { data, error } = await supabase
+      .from("todo")
+      .select("content")
+      .eq("group_id", groupId);
+
+    console.log(data);
+
+    todo = data.map((t) => t.content);
+
+    if (error) {
+      res.status(400).send("Error while retrieving data from the DB: " + error);
+    }
+  }
+
+  {
+    const { data, error } = await supabase
+      .from("group")
+      .select("destination")
+      .eq("id", groupId);
+
+    console.log(data);
+
+    destination = data[0].destination;
+
+    if (error) {
+      res.status(400).send("Error while retrieving data from the DB: " + error);
+    }
+  }
+
+  let message = `Hi! We are doing a trip to ${destination}. We currently have the following list of things to bring/do:\n`;
+
+  todo.forEach((t) => (message += `${t}\n`));
+
+  message += "In your opinion, are we missing anything?";
+
+  gpt.addMessage(message);
+
+  const response = await gpt.ask();
+
+  res.json({ todo: response.content });
+});
+
+app.post("/api/askChatGpt", async (req, res) => {
+  gpt.addMessage(req.body.message);
+
+  const response = await gpt.ask();
+
+  res.json({ message: response.content });
+});
+
 //Google Docs stuff
 app.get('/auth/google', (req, res) => {
   const authUrl = oauth2Client.generateAuthUrl({
@@ -308,6 +485,20 @@ app.post('/api/calendar/:calendarId/people', async (req, res) => {
     res.status(500).send('Error adding people to calendar');
   }
 });
+
+const generateRandomString = (length) => {
+  let result = "";
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const charactersLength = characters.length;
+  let counter = 0;
+  while (counter < length) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    counter += 1;
+  }
+  return result;
+};
+
 app.listen(PORT, () => {
   console.log(`Server started on http://localhost:${PORT}/`);
 });

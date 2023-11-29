@@ -1,15 +1,27 @@
 import { useContext, useEffect, useState } from "react";
 import { Row, Col, Card, Button } from "react-bootstrap";
 import AppContext from "../context/appContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 function DefaultLayout(props: { userEmail: string }) {
   const [trips, setTrips] = useState([]);
   const { userEmail } = props;
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // Initialize Supabase client
   const supabase = useContext(AppContext);
   const navigate = useNavigate();
+
+  if (searchParams.get("spotify_access_token")) {
+    localStorage.setItem(
+      "spotify_access_token",
+      searchParams.get("spotify_access_token")
+    );
+    localStorage.setItem(
+      "spotify_refresh_token",
+      searchParams.get("spotify_refresh_token")
+    );
+  }
 
   useEffect(() => {
     const removeTokenFromUrl = () => {

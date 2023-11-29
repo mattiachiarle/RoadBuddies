@@ -94,6 +94,15 @@ function Trip() {
               </Button>
             </Row>
 
+            <Row>
+              <Button
+                onClick={() => navigate(`spotify`)}
+                variant="primary"
+                style={{ border: "1px solid black" }}
+              >
+                Spotify
+              </Button>
+            </Row>
           </div>
         </Col>
         <Col xs={9}>
@@ -103,6 +112,5 @@ function Trip() {
     </>
   );
 }
-
 
 export default Trip;
