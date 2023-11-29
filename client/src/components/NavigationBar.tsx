@@ -1,15 +1,16 @@
-import { Link, useMatch, useParams } from "react-router-dom";
+import { Link, useMatch, useParams, useLocation  } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import AppContext from "../context/appContext.tsx";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { Button, Navbar, NavbarBrand, NavbarContent, NavbarItem } from "@nextui-org/react";
 import { IoIosArrowBack } from "react-icons/io";
-import axios from "axios";
 function NavigationBar(props: {
   email: string;
   updateEmail: (arg0: string) => void;
 }) {
+  const location = useLocation();
+  const currentUrl = location.pathname;
   const tripId = useParams();
   const matchLogin = useMatch("/login");
   const matchHomepage = useMatch("/");
@@ -19,27 +20,6 @@ function NavigationBar(props: {
   useEffect(() => {
     if(matchTrip) setTripId(matchTrip.params.tripId);
   },[ matchTrip, tripId])
-  const handleCalendarClick = async () => {
-    const accessToken = localStorage.getItem("google_access_token");
-    const refreshToken = localStorage.getItem("google_refresh_token");
-
-    if (accessToken && refreshToken) {
-      // Navigate to CalendarComponent if tokens are present
-      navigate("calendar");
-    } else {
-      // Initiate OAuth process if no tokens are found
-      try {
-        //const url = 'http://localhost:3000/auth/google';
-        const url = "https://roadbuddies-backend.onrender.com/auth/google";
-        const response = await axios.get(url);
-        const authUrl = response.data.authUrl;
-        window.location.href = authUrl;
-      } catch (error) {
-        console.error("Error initiating OAuth:", error);
-        // Handle error (e.g., show error message)
-      }
-    }
-  };
   const hide = matchLogin || matchHomepage || matchCreateTrip ; 
   const navigate = useNavigate();
   const email = props && props.email;
@@ -51,6 +31,10 @@ function NavigationBar(props: {
 
       toast.success("You have been signed out successfully!");
       props.updateEmail("");
+      localStorage.removeItem("spotify_access_token");
+      localStorage.removeItem("spotify_refresh_token");
+      localStorage.removeItem("google_access_token");
+      localStorage.removeItem("google_refresh_token");
       navigate("/login");
     } catch (error) {
       console.error("Error signing out:", error);
@@ -63,48 +47,97 @@ function NavigationBar(props: {
       {!hide && <p style={{marginRight:"10%"}} onClick={() => navigate(-1)}><IoIosArrowBack color="white" size="24px"/></p>}
       <p style={{fontWeight:"bold", color:"white", fontSize:"25px", cursor:"pointer"}}> RoadBuddies</p>
     </NavbarBrand>
-    <NavbarContent className={hide? "hidden sm:flex gap-4" : "sm:flex gap-4"} justify="center">
+    
+{ matchTrip? (
+  <NavbarContent className={hide? "hidden sm:flex gap-4" : "sm:flex gap-4"} justify="center">
     <NavbarItem >
-        <Link style={{color:"whitesmoke",textDecoration:"none" }} to={`trips/${trip_id}`} >
+        <Link style={{color:"whitesmoke",textDecoration:"none" }} to={`${currentUrl}`} >
           Info
         </Link>
       </NavbarItem>
       <NavbarItem >
-        <Link style={{color:"whitesmoke",textDecoration:"none" }} to={`trips/${trip_id}/editInfo`} >
+        <Link style={{color:"whitesmoke",textDecoration:"none" }} to={`${currentUrl}editInfo`} >
           Edit Info
         </Link>
       </NavbarItem>
       <NavbarItem >
-        <Link style={{color:"whitesmoke",textDecoration:"none" }} to={`trips/${trip_id}/Chat`} >
+        <Link style={{color:"whitesmoke",textDecoration:"none" }} to={`${currentUrl}Chat`} >
           Chat
         </Link>
       </NavbarItem>
       <NavbarItem >
-        <Link style={{color:"whitesmoke",textDecoration:"none" }} to={`trips/${trip_id}/editToDo`} >
+        <Link style={{color:"whitesmoke",textDecoration:"none" }} to={`${currentUrl}editToDo`} >
           Edit To-Do
         </Link>
       </NavbarItem>
       <NavbarItem >
-        <Link style={{color:"whitesmoke",textDecoration:"none" }} to={`trips/${trip_id}/editParticipants`} >
+        <Link style={{color:"whitesmoke",textDecoration:"none" }} to={`${currentUrl}editParticipants`} >
           Edit Participants
         </Link>
       </NavbarItem>
       <NavbarItem >
-        <Link style={{color:"whitesmoke",textDecoration:"none" }} to={`trips/${trip_id}/addTransaction`} >
+        <Link style={{color:"whitesmoke",textDecoration:"none" }} to={`${currentUrl}addTransaction`} >
           Add transaction
         </Link>
       </NavbarItem>
       <NavbarItem >
-        <Link style={{color:"whitesmoke",textDecoration:"none" }} to={`trips/${trip_id}/spotify`} >
+        <Link style={{color:"whitesmoke",textDecoration:"none" }} to={`${currentUrl}spotify`} >
           Spotify
         </Link>
       </NavbarItem>
       <NavbarItem >
-        <Link style={{color:"whitesmoke",textDecoration:"none",backgroundColor:"transparent" }} onClick={handleCalendarClick} >
+        <Link style={{color:"whitesmoke",textDecoration:"none",backgroundColor:"transparent" }} to={`${currentUrl}calendar`}>
           Calendar
         </Link>
       </NavbarItem>
       </NavbarContent>
+      )
+      :
+      (
+        <NavbarContent className={hide? "hidden sm:flex gap-4" : "sm:flex gap-4"} justify="center">
+        <NavbarItem >
+            <Link style={{color:"whitesmoke",textDecoration:"none" }} to={`${currentUrl}/..`} >
+              Info
+            </Link>
+          </NavbarItem>
+          <NavbarItem >
+            <Link style={{color:"whitesmoke",textDecoration:"none" }} to={`${currentUrl}/../editInfo`} >
+              Edit Info
+            </Link>
+          </NavbarItem>
+          <NavbarItem >
+            <Link style={{color:"whitesmoke",textDecoration:"none" }} to={`${currentUrl}/../Chat`} >
+              Chat
+            </Link>
+          </NavbarItem>
+          <NavbarItem >
+            <Link style={{color:"whitesmoke",textDecoration:"none" }} to={`${currentUrl}/../editToDo`} >
+              Edit To-Do
+            </Link>
+          </NavbarItem>
+          <NavbarItem >
+            <Link style={{color:"whitesmoke",textDecoration:"none" }} to={`${currentUrl}/../editParticipants`} >
+              Edit Participants
+            </Link>
+          </NavbarItem>
+          <NavbarItem >
+            <Link style={{color:"whitesmoke",textDecoration:"none" }} to={`${currentUrl}/../addTransaction`} >
+              Add transaction
+            </Link>
+          </NavbarItem>
+          <NavbarItem >
+            <Link style={{color:"whitesmoke",textDecoration:"none" }} to={`${currentUrl}/../spotify`} >
+              Spotify
+            </Link>
+          </NavbarItem>
+          <NavbarItem >
+            <Link style={{color:"whitesmoke",textDecoration:"none",backgroundColor:"transparent" }} to={`${currentUrl}/../calendar`}>
+              Calendar
+            </Link>
+          </NavbarItem>
+          </NavbarContent>
+      )
+    }
       <NavbarContent justify="end">          
       <NavbarItem>
         {email?
@@ -120,34 +153,6 @@ function NavigationBar(props: {
       </NavbarItem>
     </NavbarContent>
   </Navbar>
-    // <Navbar bg="primary" data-bs-theme="dark">
-    //   <Container>
-        // <Button onClick={() => navigate(-1)}>
-        //   <i
-        //     className="fa fa-chevron-circle-left"
-        //     style={{ fontSize: "30px" }}
-        //   ></i>
-        // </Button>
-    //     <Navbar.Brand href="/">RoadBuddies</Navbar.Brand>
-    //     <Nav className="ms-auto">
-    //       {email ? (
-    //         <>
-    //           <Navbar.Text className="me-3">Hello, {email}</Navbar.Text>{" "}
-    //           <Button variant="danger" onClick={signOut}>
-    //             Sign Out
-    //           </Button>
-    //         </>
-    //       ) : (
-    //         <Button
-    //           onClick={() => redirect("/login")}
-    //           style={{ border: "1px solid white" }}
-    //         >
-    //           Login
-    //         </Button>
-    //       )}
-    //     </Nav>
-    //   </Container>
-    // </Navbar>
   );
 }
 export default NavigationBar;

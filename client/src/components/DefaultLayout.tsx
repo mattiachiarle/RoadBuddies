@@ -137,7 +137,7 @@ function DefaultLayout(props: { userEmail: string }) {
               key={trip.id}
               style={{ margin: "10px 0", cursor: "pointer", justifyContent:"center" }}
               isPressable
-              onPress={() => navigate(`/trips/${trip.id}`)}
+              onPress={() => navigate(`/trips/${trip.id}/`)}
             >
               <div style={{display:"flex",width:"100%", flexDirection:"column", alignItems:"center"}}>{trip.name}</div>
 

@@ -2,6 +2,11 @@ import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useParams } from "react-router-dom";
 import AppContext from "../context/appContext.tsx";
+import dayjs from 'dayjs';
+import { MyEvent } from '../utils/types.ts';
+import Container from './Container.tsx';
+import { Card, CardBody, Divider } from '@nextui-org/react';
+import { CardHeader } from 'react-bootstrap';
 
 export default function CalendarEventsComponent() {
     const [events, setEvents] = useState([]);
@@ -24,8 +29,8 @@ export default function CalendarEventsComponent() {
 
                 // Fetch details for each event
                 const fetchedEvents = await Promise.all(eventIds.map(async (eventId) => {
-                    //const uri = `http://localhost:3000/api/calendar/event/${eventId}`;
-                    const uri = `https://roadbuddies-backend.onrender.com/api/calendar/event/${eventId}`;
+                    const uri = `http://localhost:3000/api/calendar/event/${eventId}`;
+                    // const uri = `https://roadbuddies-backend.onrender.com/api/calendar/event/${eventId}`;
                     const response = await axios.get(uri, {
                         headers: { Authorization: `Bearer ${accessToken}`,
                             'Refresh-Token': refreshToken}
@@ -41,6 +46,7 @@ export default function CalendarEventsComponent() {
         };
 
         fetchEvents();
+        console.log(events);    
     }, [tripId, supabase]); // Add supabase to the dependency array
 
     // Function to get event IDs from Supabase
@@ -52,6 +58,7 @@ export default function CalendarEventsComponent() {
                 .eq('tripid', tripId);
 
             if (error) throw error;
+            console.log('Event IDs:', data)
             return data.map(item => item.eventid);
         } catch (error) {
             console.error('Error fetching event IDs:', error);
@@ -60,17 +67,49 @@ export default function CalendarEventsComponent() {
     };
 
     return (
-        <div>
-            <h2>Events</h2>
-            {events.map((event, index) => (
-                <div key={index}>
-                    <h3>{event.summary}</h3>
-                    <p>{event.description}</p>
-                    <p>Location: {event.location}</p>
-                    <p>Start: {new Date(event.start.dateTime).toLocaleString()}</p>
-                    <p>End: {new Date(event.end.dateTime).toLocaleString()}</p>
+        <>
+       <h3 style={{color:"white", textAlign:"center"}}>Your Trips</h3>
+       <Container>
+       {events.length > 0 ? (
+          events.map((event : MyEvent, index) => (
+            <Card
+              shadow="sm"
+              key={index}
+              style={{ margin: "10px 0", justifyContent:"center" }}
+            >
+            <CardHeader>
+                <h4 style={{padding:"5px"}}>{event.summary}</h4>
+            </CardHeader>
+            <CardBody>
+                <div style={{display:"flex",width:"100%", flexDirection:"column", alignItems:"center"}}>
+                    <div>{event.description}</div>
+                    <div>Location: {event.location}</div>
+                    <p>Start: {dayjs(event.start.dateTime).format("MMMM D, YYYY")}</p>
+                    <p>End: {dayjs(event.end.dateTime).format("MMMM D, YYYY")}</p>
                 </div>
-            ))}
-        </div>
+            </CardBody>
+            </Card>
+          ))
+          )
+          :
+          (
+            <p>No events found.</p>
+          )
+
+        }
+        </Container>        
+        </>
+        // <div style={{color:"white", display:"flex", flexDirection:"column", justifyItems:"center", alignItems:"center"}}>
+        //     <h2>Events</h2>
+        //     {events.map((event : MyEvent, index) => (
+        //         <div key={index}>
+        //             <h3>{event.summary}</h3>
+        //             <p>{event.description}</p>
+        //             <p>Location: {event.location}</p>
+        //             <p>Start: {dayjs(event.start.dateTime).format("MMMM D, YYYY")}</p>
+        //             <p>End: {dayjs(event.end.dateTime).format("MMMM D, YYYY")}</p>
+        //         </div>
+        //     ))}
+        // </div>
     );
 }

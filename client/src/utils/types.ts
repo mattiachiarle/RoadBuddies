@@ -18,3 +18,28 @@ export type Todo = {
   checked: boolean;
   user: string;
 };
+export type User = {
+  user_id : string;
+}
+export type MyEvent = {
+  summary: string;
+  description: string;
+  location: string;
+  start: string;
+  end: string;
+  reminders: {
+    useDefault: boolean;
+    overrides: [
+      {
+        method: "email",
+        minutes: number;
+      },
+      {
+        method: "popup",
+        minutes: number;
+      }
+    ];
+  },
+  attendees: [];
+}
+  

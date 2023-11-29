@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 
 function AddTransaction() {
-  const supabase = useContext(AppContext);
+  const supabase  = useContext(AppContext);
   const [participants, setParticipants] = useState([]);
   const [user, setUser] = useState<string>("");
   const [amount, setAmount] = useState(0);
@@ -19,6 +19,7 @@ function AddTransaction() {
       if (error) {
         console.error("Error fetching participants:", error);
       } else if (data) {
+        console.log(data)
         setParticipants(data.map((item) => item.user_id));
       }
     };

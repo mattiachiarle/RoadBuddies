@@ -41,8 +41,7 @@ function Spotify() {
     setLogged(false);
   };
 
-  const createPlaylist = async (event) => {
-    event.preventDefault(); // Prevent the default form submission
+  const createPlaylist = async () => {
     const url = await createSpotifyPlaylist(
       name,
       description,
@@ -52,7 +51,7 @@ function Spotify() {
       clearSpotifyTokens();
       localStorage.removeItem("spotify_access_token");
     } else {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("group")
         .update({ spotify_playlist: url })
         .eq("id", tripId);
@@ -93,39 +92,10 @@ function Spotify() {
                 <Textarea placeholder="Add a description" type="text" name="description" value={description} onChange={handleDescriptionChange}/>
               </div>
               <div style={{display:"flex", flexDirection:"row", width:"25%", alignItems:"center", gap:"1rem", justifyContent:"center"}}>
-              <Button variant="ghost" color="success">Create</Button>
-              <Button variant="ghost" >Cancel</Button>
+              <Button variant="ghost" color="success" onClick={createPlaylist}>Create</Button>
+              <Button variant="ghost" onClick={() => {setDescription(""); setName("");}}>Cancel</Button>
               </div>
             </>
-            // <Form onSubmit={createPlaylist}>
-            //   <Row>
-            //     <Col>
-            //       <Form.Group controlId="formName">
-            //         <Form.Label>Name:</Form.Label>
-            //         <Form.Control
-            //           type="text"
-            //           name="name"
-            //           value={name}
-            //           onChange={handleNameChange}
-            //         />
-            //       </Form.Group>
-            //     </Col>
-            //   </Row>
-            //   <Row>
-            //     <Col>
-            //       <Form.Group controlId="formDescription">
-            //         <Form.Label>Description:</Form.Label>
-            //         <Form.Control
-            //           type="text"
-            //           name="description"
-            //           value={description}
-            //           onChange={handleDescriptionChange}
-            //         />
-            //       </Form.Group>
-            //     </Col>
-            //   </Row>
-            //   <Button type="submit">Create playlist</Button>
-            // </Form>
           ) : (
               <a href={playlist} >
                   <Button color="success" variant="ghost">Go to playlist<FaSpotify size="20px"/></Button>

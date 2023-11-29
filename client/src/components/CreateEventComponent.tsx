@@ -1,11 +1,15 @@
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { Type } from "react-toastify/dist/utils";
 import { useNavigate, useParams } from "react-router-dom";
 import AppContext from "../context/appContext.tsx";
-
+import { User } from "../utils/types.ts";
+import { Button, Input, Textarea } from "@nextui-org/react";
+import { LuText } from "react-icons/lu";
+import { IoLocationOutline } from "react-icons/io5";
+import dayjs from "dayjs";
+import { DateTimePicker, renderTimeViewClock } from "@mui/x-date-pickers";
+import "../utils/css/datePicker.css";
 export default function CreateEventComponent() {
   const { tripId } = useParams();
   const supabase = useContext(AppContext);
@@ -14,8 +18,8 @@ export default function CreateEventComponent() {
     summary: "",
     location: "",
     description: "",
-    start: new Date(),
-    end: new Date(),
+    start: "" ,
+    end: "",
     reminders: {
       useDefault: false,
       overrides: [
@@ -37,7 +41,7 @@ export default function CreateEventComponent() {
         console.error("Error fetching participants:", error);
       } else {
         // Convert user IDs to attendee objects
-        const attendees = data.map((participant) => ({
+        const attendees = data.map((participant: User) => ({
           email: participant.user_id,
         }));
         setEventDetails((prevDetails) => ({
@@ -54,8 +58,9 @@ export default function CreateEventComponent() {
   const handleDateTimeChange = (date, field) => {
     setEventDetails({
       ...eventDetails,
-      [field]: date, // Directly setting the date object
+      [field]: date.toISOString(), // Directly setting the date object
     });
+    console.log(eventDetails)
   };
 
   // Add and remove attendees
@@ -81,18 +86,15 @@ export default function CreateEventComponent() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formattedStart = eventDetails.start.toISOString();
-    const formattedEnd = eventDetails.end.toISOString();
     // Filter out empty attendee emails
     const validAttendees = eventDetails.attendees.filter(
       (attendee) => attendee.email.trim() !== ""
     );
-
     // Construct the final event object
     const finalEventDetails = {
       ...eventDetails,
-      start: { dateTime: formattedStart, timeZone: "America/Los_Angeles" },
-      end: { dateTime: formattedEnd, timeZone: "America/Los_Angeles" },
+      start: { dateTime: eventDetails.start, timeZone: "America/Los_Angeles" },
+      end: { dateTime: eventDetails.end, timeZone: "America/Los_Angeles" },
       attendees: validAttendees,
     };
     console.log("Final Event Details:", finalEventDetails);
@@ -105,8 +107,8 @@ export default function CreateEventComponent() {
     }
 
     try {
-      //const url = 'http://localhost:3000/api/calendar/event';
-      const url = "https://roadbuddies-backend.onrender.com/api/calendar/event";
+      const url = 'http://localhost:3000/api/calendar/event';
+      // const url = "https://roadbuddies-backend.onrender.com/api/calendar/event";
       const response = await axios.post(url, finalEventDetails, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -133,73 +135,114 @@ export default function CreateEventComponent() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>Event Name:</label>
-        <input
-          type="text"
-          value={eventDetails.summary}
-          onChange={(e) =>
-            setEventDetails({ ...eventDetails, summary: e.target.value })
-          }
+    <div style={{display:"flex", flexDirection:"column", alignItems:"center", gap:"1rem"}}>
+      <div style={{display:"flex", flexDirection:"row", width:"50%"}}>
+        <Input type="text" label="Add Title" variant="underlined" value={eventDetails.summary} onChange={(e) => setEventDetails({ ...eventDetails, summary: e.target.value })}></Input>
+      </div>
+      <div style={{display:"flex", flexDirection:"row", width:"50%", color:"white"}}>
+        <Textarea type="text"  label={<div style={{display:"flex", flexDirection:"row",gap:"4px"}}><LuText style={{marginTop:"4px"}} />Description</div>} variant="bordered" value={eventDetails.description} onChange={(e) => setEventDetails({ ...eventDetails, description: e.target.value })}></Textarea>
+      </div>
+      <div style={{display:"flex", flexDirection:"row", width:"50%"}}>
+        <Input type="text" label={<div style={{display:"flex", flexDirection:"row",gap:"4px"}}><IoLocationOutline style={{marginTop:"4px"}} />Add Location</div>} variant="underlined" value={eventDetails.location} onChange={ (e) => {  setEventDetails({ ...eventDetails, location: e.target.value })}}></Input>
+      </div>
+      <div style={{display:"flex", flexDirection:"row", width:"50%", gap:"1rem", color:"white", justifyContent:"center"}}>
+         <DateTimePicker 
+          value={dayjs(eventDetails.start)}
+          onChange={(date) => {handleDateTimeChange(date, "start")}}
+          orientation="landscape"
+          label={<div style={{color:"white"}}>Start Date and Time</div>}
+          viewRenderers={{
+            hours: renderTimeViewClock,
+            minutes: renderTimeViewClock,
+            seconds: renderTimeViewClock,
+          }}
+        />
+         <DateTimePicker 
+          className="date-picker"
+          value={dayjs(eventDetails.end)}
+          onChange={(date) => {handleDateTimeChange(date, "end")}}
+          orientation="landscape"
+          label={<div style={{color:"white"}}>End Date and Time</div>}
+          viewRenderers={{
+            hours: renderTimeViewClock,
+            minutes: renderTimeViewClock,
+            seconds: renderTimeViewClock,
+          }}
         />
       </div>
-      <div>
-        <label>Description:</label>
-        <textarea
-          value={eventDetails.description}
-          onChange={(e) =>
-            setEventDetails({ ...eventDetails, description: e.target.value })
-          }
-        />
+      <div style={{display:"flex", flexDirection:"row", width:"50%", gap:"1rem", color:"white", justifyContent:"center"}}>
+        <Button variant="ghost" color="success" onClick={handleSubmit}>
+            Save
+        </Button>
       </div>
-      <div>
-        <label>Location:</label>
-        <input
-          type="text"
-          value={eventDetails.location}
-          onChange={(e) =>
-            setEventDetails({ ...eventDetails, location: e.target.value })
-          }
-        />
-      </div>
-      <div>
-        <label>Start Date and Time:</label>
-        <ReactDatePicker
-          selected={new Date(eventDetails.start)}
-          onChange={(date) => handleDateTimeChange(date, "start")}
-          showTimeSelect
-          dateFormat="yyyy-MM-dd'T'HH:mm:ssXXX"
-          timeFormat="HH:mm"
-        />
-      </div>
-      <div>
-        <label>End Date and Time:</label>
-        <ReactDatePicker
-          selected={new Date(eventDetails.end)}
-          onChange={(date) => handleDateTimeChange(date, "end")}
-          showTimeSelect
-          dateFormat="yyyy-MM-dd'T'HH:mm:ssXXX"
-          timeFormat="HH:mm"
-        />
-      </div>
-      {/*<div>*/}
-      {/*    <label>Attendees:</label>*/}
-      {/*    {eventDetails.attendees.map((attendee, index) => (*/}
-      {/*        <div key={index}>*/}
-      {/*            <input*/}
-      {/*                type="email"*/}
-      {/*                placeholder="Attendee's email"*/}
-      {/*                value={attendee.email}*/}
-      {/*                onChange={(e) => handleAttendeeEmailChange(e.target.value, index)}*/}
-      {/*            />*/}
-      {/*            <button type="button" onClick={() => handleRemoveAttendee(index)}>Remove</button>*/}
-      {/*        </div>*/}
-      {/*    ))}*/}
-      {/*    <button type="button" onClick={handleAddAttendee}>Add Attendee</button>*/}
-      {/*</div>*/}
-      {/* ... other fields ... */}
-      <button type="submit">Submit</button>
-    </form>
+    </div>
+    // <form onSubmit={handleSubmit} style={{color: "white"}}>
+    //   <div>
+    //     <label>Event Name:</label>
+    //     <input
+    //       type="text"
+    //       value={eventDetails.summary}
+    //       onChange={(e) =>
+    //         setEventDetails({ ...eventDetails, summary: e.target.value })
+    //       }
+    //     />
+    //   </div>
+    //   <div>
+    //     <label>Description:</label>
+    //     <textarea
+    //       value={eventDetails.description}
+    //       onChange={(e) =>
+    //         setEventDetails({ ...eventDetails, description: e.target.value })
+    //       }
+    //     />
+    //   </div>
+    //   <div>
+    //     <label>Location:</label>
+    //     <input
+    //       type="text"
+    //       value={eventDetails.location}
+    //       onChange={(e) =>
+    //         setEventDetails({ ...eventDetails, location: e.target.value })
+    //       }
+    //     />
+    //   </div>
+    //   <div>
+    //     <label>Start Date and Time:</label>
+    //     <ReactDatePicker
+    //       selected={new Date(eventDetails.start)}
+    //       onChange={(date) => handleDateTimeChange(date, "start")}
+    //       showTimeSelect
+    //       dateFormat="yyyy-MM-dd'T'HH:mm:ssXXX"
+    //       timeFormat="HH:mm"
+    //     />
+    //   </div>
+    //   <div>
+    //     <label>End Date and Time:</label>
+    //     <ReactDatePicker
+    //       selected={new Date(eventDetails.end)}
+    //       onChange={(date) => handleDateTimeChange(date, "end")}
+    //       showTimeSelect
+    //       dateFormat="yyyy-MM-dd'T'HH:mm:ssXXX"
+    //       timeFormat="HH:mm"
+    //     />
+    //  </div>
+      // {/*<div>*/}
+      // {/*    <label>Attendees:</label>*/}
+      // {/*    {eventDetails.attendees.map((attendee, index) => (*/}
+      // {/*        <div key={index}>*/}
+      // {/*            <input*/}
+      // {/*                type="email"*/}
+      // {/*                placeholder="Attendee's email"*/}
+      // {/*                value={attendee.email}*/}
+      // {/*                onChange={(e) => handleAttendeeEmailChange(e.target.value, index)}*/}
+      // {/*            />*/}
+      // {/*            <button type="button" onClick={() => handleRemoveAttendee(index)}>Remove</button>*/}
+      // {/*        </div>*/}
+      // {/*    ))}*/}
+      // {/*    <button type="button" onClick={handleAddAttendee}>Add Attendee</button>*/}
+      // {/*</div>*/}
+      // {/* ... other fields ... */}
+    //   <button type="submit">Submit</button>
+    // </form>
   );
 }
