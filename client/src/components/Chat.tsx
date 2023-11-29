@@ -4,7 +4,7 @@ import { Message } from "../utils/types";
 import { Button, Form, Row } from "react-bootstrap";
 import "../utils/css/chat.css";
 import { useParams } from "react-router-dom";
-import { getPayingUser } from "../API.js";
+import { getPayingUser, queryChatGpt } from "../API.js";
 
 function Chat({ email }) {
   const [messages, setMessages] = useState<Array<Message>>([]);
@@ -48,7 +48,7 @@ function Chat({ email }) {
             user_id: res.new.user_id,
           };
           setMessages((messages: Array<Message>) => [...messages, newMessage]);
-        },
+        }
       );
 
       /**
@@ -144,6 +144,20 @@ function InputBox(props) {
           }
         }
 
+        if (message.startsWith("@chatgpt")) {
+          const response_message = await queryChatGpt(
+            message.split("@chatgpt")[1]
+          );
+          const { error } = await supabase.from("messages").insert({
+            user_id: props.username,
+            content: response_message,
+            group_id: props.group,
+          });
+          if (error) {
+            throw error;
+          }
+        }
+
         if (error) {
           throw error;
         }
@@ -188,42 +202,50 @@ function InputBox(props) {
     setMessage(ev.target.value);
   };
   return (
-    <Form
-      className="input-container"
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSend(message);
-      }}
-    >
+    <>
+      <Form
+        className="input-container"
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSend(message);
+        }}
+      >
+        <Row>
+          <Form.Group className="mb-4">
+            <Form.Label></Form.Label>
+            <Form.Control
+              type="text"
+              value={message}
+              onChange={changeMessage}
+              placeholder="Type a message..."
+            />
+          </Form.Group>
+          <Form.Group>
+            <Button
+              variant="success"
+              onClick={() => {
+                onSend(message);
+              }}
+            >
+              Send
+            </Button>{" "}
+            <Button
+              onClick={() => {
+                askWhoPays();
+              }}
+            >
+              Who pays?
+            </Button>
+          </Form.Group>
+        </Row>
+      </Form>
       <Row>
-        <Form.Group className="mb-4">
-          <Form.Label></Form.Label>
-          <Form.Control
-            type="text"
-            value={message}
-            onChange={changeMessage}
-            placeholder="Type a message..."
-          />
-        </Form.Group>
-        <Form.Group>
-          <Button
-            variant="success"
-            onClick={() => {
-              onSend(message);
-            }}
-          >
-            Send
-          </Button>{" "}
-          <Button
-            onClick={() => {
-              askWhoPays();
-            }}
-          >
-            Who pays?
-          </Button>
-        </Form.Group>
+        <div style={{ color: "GrayText" }}>
+          You can ask anything to chatgpt by writing a message starting with
+          @chatgpt in the chat!
+        </div>
       </Row>
-    </Form>
+    </>
   );
 }
 export default Chat;

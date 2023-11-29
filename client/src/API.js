@@ -18,6 +18,25 @@ async function getPayingUser(groupId) {
   }
 }
 
+async function queryChatGpt(message) {
+  const response = await fetch(url + `/api/askChatGpt`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      message: message,
+    }),
+  });
+  if (response.ok) {
+    const content = await response.json();
+    return content.message;
+  } else {
+    const message = await response.text();
+    throw new Error(message);
+  }
+}
+
 const generateRandomString = (length) => {
   let result = "";
   const characters =
@@ -91,4 +110,4 @@ async function createSpotifyPlaylist(name, description, accessToken) {
   }
 }
 
-export { getPayingUser, spotifyLogin, createSpotifyPlaylist };
+export { getPayingUser, spotifyLogin, createSpotifyPlaylist, queryChatGpt };

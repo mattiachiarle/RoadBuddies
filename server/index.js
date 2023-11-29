@@ -14,7 +14,6 @@ import oauth2Client from "./googleAuth.js";
 const api_key = process.env.CHAT_GPT_API;
 const spotify_client_id = process.env.SPOTIFY_CLIENT_ID;
 const spotify_client_secret = process.env.SPOTIFY_CLIENT_SECRET;
-console.log(spotify_client_secret);
 const redirect_url = "https://roadbuddies-backend.onrender.com/api/callback";
 // const redirect_url = "http://localhost:3000/api/callback";
 
@@ -39,6 +38,8 @@ app.use(
     credentials: true,
   })
 );
+
+app.use(express.json());
 
 app.get("/api/spotifyLogin", function (req, res) {
   var state = generateRandomString(16);
@@ -103,7 +104,6 @@ app.get("/api/callback", async (req, res) => {
     //     res.send("Error obtaining access token");
     //   });
     request.post(authOptions, function (error, response, body) {
-      console.log(body);
       var access_token = body.access_token;
       var refresh_token = body.refresh_token;
       // let uri = "http://localhost:5173";
@@ -216,6 +216,15 @@ app.get("/api/groups/:groupid/getPayingUser", async (req, res) => {
 
   res.json({ user: response.content });
 });
+
+app.post("/api/askChatGpt", async (req, res) => {
+  gpt.addMessage(req.body.message);
+
+  const response = await gpt.ask();
+
+  res.json({ message: response.content });
+});
+
 //Google Docs stuff
 app.get("/auth/google", (req, res) => {
   const authUrl = oauth2Client.generateAuthUrl({
@@ -246,6 +255,7 @@ app.get("/auth/google/callback", async (req, res) => {
     res.status(400).send("Invalid request, authorization code is missing");
   }
 });
+
 const generateRandomString = (length) => {
   let result = "";
   const characters =
