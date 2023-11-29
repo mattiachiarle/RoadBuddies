@@ -45,7 +45,7 @@ function DefaultLayout(props: { userEmail: string }) {
           localStorage.setItem("google_refresh_token", refreshToken);
           const { error } = await supabase
             .from("user")
-            .update({ google_refresh_token: refreshToken })
+            .update([{ google_refresh_token: refreshToken }])
             .eq("user_id", userEmail);
           if (error) {
             console.log("Supabase error " + error);
