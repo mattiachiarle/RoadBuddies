@@ -12,6 +12,24 @@ function DefaultLayout(props: { userEmail: string }) {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const removeTokenFromUrl = () => {
+      const newUrl = window.location.origin + window.location.pathname;
+      window.history.pushState('object', document.title, newUrl);
+    };
+
+    // Extract tokens from URL
+    const queryParams = new URLSearchParams(window.location.search);
+    const accessToken = queryParams.get('accessToken');
+    const refreshToken = queryParams.get('refreshToken');
+
+    // Store tokens and remove from URL
+    if (accessToken) {
+      localStorage.setItem('google_access_token', accessToken);
+      if (refreshToken) {
+        localStorage.setItem('google_refresh_token', refreshToken);
+      }
+      removeTokenFromUrl();
+    }
     const fetchTrips = async () => {
       if (userEmail) {
         try {
