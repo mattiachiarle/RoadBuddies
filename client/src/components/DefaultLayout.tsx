@@ -26,22 +26,37 @@ function DefaultLayout(props: { userEmail: string }) {
   useEffect(() => {
     const removeTokenFromUrl = () => {
       const newUrl = window.location.origin + window.location.pathname;
-      window.history.pushState('object', document.title, newUrl);
+      window.history.pushState("object", document.title, newUrl);
     };
 
-    // Extract tokens from URL
-    const queryParams = new URLSearchParams(window.location.search);
-    const accessToken = queryParams.get('accessToken');
-    const refreshToken = queryParams.get('refreshToken');
+    const checkGoogleTokens = async () => {
+      // Extract tokens from URL
+      const queryParams = new URLSearchParams(window.location.search);
+      const accessToken = queryParams.get("accessToken");
+      const refreshToken = queryParams.get("refreshToken");
 
-    // Store tokens and remove from URL
-    if (accessToken) {
-      localStorage.setItem('google_access_token', accessToken);
-      if (refreshToken) {
-        localStorage.setItem('google_refresh_token', refreshToken);
+      // Store tokens and remove from URL
+      if (accessToken) {
+        localStorage.setItem("google_access_token", accessToken);
+        if (refreshToken) {
+          localStorage.setItem("google_refresh_token", refreshToken);
+          await supabase
+            .from("user")
+            .update({ google_refresh_token: refreshToken })
+            .eq("user_id", userEmail);
+        } else {
+          const refresh_token = await supabase
+            .from("user")
+            .select("google_refresh_token")
+            .eq("user_id", userEmail);
+          localStorage.setItem(
+            "google_refresh_token",
+            refresh_token.google_refresh_token
+          );
+        }
+        removeTokenFromUrl();
       }
-      removeTokenFromUrl();
-    }
+    };
     const fetchTrips = async () => {
       if (userEmail) {
         try {
@@ -68,6 +83,7 @@ function DefaultLayout(props: { userEmail: string }) {
     };
 
     fetchTrips();
+    checkGoogleTokens();
   }, [userEmail, supabase, navigate]);
 
   return (
