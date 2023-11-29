@@ -40,17 +40,19 @@ function DefaultLayout(props: { userEmail: string }) {
       console.log(userEmail);
 
       // Store tokens and remove from URL
-      if (accessToken) {
+      if (accessToken && userEmail) {
         localStorage.setItem("google_access_token", accessToken);
         if (refreshToken) {
           console.log(userEmail);
           console.log(refreshToken);
-          const { error } = await supabase
+          const { data, error } = await supabase
             .from("user")
             .update([{ google_refresh_token: refreshToken }])
-            .eq("user_id", userEmail);
+            .eq("user_id", userEmail)
+            .select();
           localStorage.setItem("google_refresh_token", refreshToken);
           // if (error) {
+          console.log(data);
           console.log("Supabase error " + error);
           // }
         } else {
