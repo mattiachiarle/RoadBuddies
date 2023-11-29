@@ -35,15 +35,21 @@ function DefaultLayout(props: { userEmail: string }) {
       const accessToken = queryParams.get("accessToken");
       const refreshToken = queryParams.get("refreshToken");
 
+      console.log(accessToken);
+      console.log(refreshToken);
+
       // Store tokens and remove from URL
       if (accessToken) {
         localStorage.setItem("google_access_token", accessToken);
         if (refreshToken) {
           localStorage.setItem("google_refresh_token", refreshToken);
-          await supabase
+          const { error } = await supabase
             .from("user")
             .update({ google_refresh_token: refreshToken })
             .eq("user_id", userEmail);
+          if (error) {
+            console.log("Supabase error " + error);
+          }
         } else {
           const refresh_token = await supabase
             .from("user")
