@@ -1,8 +1,9 @@
-import { Button, Form, Row, Col } from "react-bootstrap";
 import { spotifyLogin, createSpotifyPlaylist } from "../API.js";
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import AppContext from "../context/appContext.js";
+import { Button, Input, Textarea } from "@nextui-org/react";
+import { FaSpotify } from "react-icons/fa";
 
 function Spotify() {
   const supabase = useContext(AppContext);
@@ -74,48 +75,64 @@ function Spotify() {
   return (
     <>
       {!logged ? (
-        <a href={url}>
-          <Button variant="primary">Login into Spotify</Button>
-        </a>
+        <div style={{display:"flex", flexDirection:"column", alignItems:"center", minHeight:"80vh", justifyContent:"center"}}>
+          <a href={url}>
+            <Button color="success" variant="ghost">Login into Spotify<FaSpotify size="20px"/></Button>
+          </a>
+        </div>
       ) : (
         <>
-          <div>You are logged in!</div>
+        <div style={{color:"white",display:"flex", flexDirection:"column", alignItems:"center", minHeight:"80vh", justifyContent:"center", gap:"1rem"}}>
           {!playlist ? (
-            <Form onSubmit={createPlaylist}>
-              <Row>
-                <Col>
-                  <Form.Group controlId="formName">
-                    <Form.Label>Name:</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="name"
-                      value={name}
-                      onChange={handleNameChange}
-                    />
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <Form.Group controlId="formDescription">
-                    <Form.Label>Description:</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="description"
-                      value={description}
-                      onChange={handleDescriptionChange}
-                    />
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Button type="submit">Create playlist</Button>
-            </Form>
+            <>
+              <h3>Give a name to your playlist</h3>
+              <div style={{display:"flex", flexDirection:"row", width:"25%", alignItems:"center"}}>
+                <Input type="text" name="name" variant="underlined" value={name} onChange={handleNameChange}/>
+              </div>
+              <div style={{display:"flex", flexDirection:"row", width:"25%", alignItems:"center"}}>
+                <Textarea placeholder="Add a description" type="text" name="description" value={description} onChange={handleDescriptionChange}/>
+              </div>
+              <div style={{display:"flex", flexDirection:"row", width:"25%", alignItems:"center", gap:"1rem", justifyContent:"center"}}>
+              <Button variant="ghost" color="success">Create</Button>
+              <Button variant="ghost" >Cancel</Button>
+              </div>
+            </>
+            // <Form onSubmit={createPlaylist}>
+            //   <Row>
+            //     <Col>
+            //       <Form.Group controlId="formName">
+            //         <Form.Label>Name:</Form.Label>
+            //         <Form.Control
+            //           type="text"
+            //           name="name"
+            //           value={name}
+            //           onChange={handleNameChange}
+            //         />
+            //       </Form.Group>
+            //     </Col>
+            //   </Row>
+            //   <Row>
+            //     <Col>
+            //       <Form.Group controlId="formDescription">
+            //         <Form.Label>Description:</Form.Label>
+            //         <Form.Control
+            //           type="text"
+            //           name="description"
+            //           value={description}
+            //           onChange={handleDescriptionChange}
+            //         />
+            //       </Form.Group>
+            //     </Col>
+            //   </Row>
+            //   <Button type="submit">Create playlist</Button>
+            // </Form>
           ) : (
-            <a href={playlist}>
-              <Button>Get playlist</Button>
-            </a>
+              <a href={playlist} >
+                  <Button color="success" variant="ghost">Go to playlist<FaSpotify size="20px"/></Button>
+              </a>
           )}
-          <Button onClick={clearSpotifyTokens}>Logout from Spotify</Button>
+          <Button  style={{marginTop:"5rem"}} color="danger" variant="ghost" onClick={clearSpotifyTokens}>Logout from Spotify</Button>
+          </div>
         </>
       )}
     </>

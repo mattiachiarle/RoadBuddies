@@ -25,8 +25,8 @@ import oauth2Client from "./googleAuth.js";
 const api_key = process.env.CHAT_GPT_API;
 const spotify_client_id = process.env.SPOTIFY_CLIENT_ID;
 const spotify_client_secret = process.env.SPOTIFY_CLIENT_SECRET;
-const redirect_url = "https://roadbuddies-backend.onrender.com/api/callback";
-//const redirect_url = "http://localhost:3000/api/callback";
+// const redirect_url = "https://roadbuddies-backend.onrender.com/api/callback";
+const redirect_url = "http://localhost:3000/api/callback";
 
 const gpt = new EasyGPT();
 gpt.setApiKey(api_key);
@@ -117,8 +117,8 @@ app.get("/api/callback", async (req, res) => {
     request.post(authOptions, function (error, response, body) {
       var access_token = body.access_token;
       var refresh_token = body.refresh_token;
-      // let uri = "http://localhost:5173";
-      let uri = "https://roadbuddies.onrender.com";
+      let uri = "http://localhost:5173";
+      // let uri = "https://roadbuddies.onrender.com";
       res.redirect(
         uri +
           "?spotify_access_token=" +
@@ -153,8 +153,8 @@ app.get("/api/refresh_token", function (req, res) {
     console.log(body);
     var access_token = body.access_token;
     var refresh_token = body.refresh_token;
-    // let uri = "http://localhost:5173";
-    let uri = "https://roadbuddies.onrender.com";
+    let uri = "http://localhost:5173";
+    // let uri = "https://roadbuddies.onrender.com";
     res.redirect(
       uri +
         "?spotify_access_token=" +
@@ -327,8 +327,8 @@ app.get("/auth/google/callback", async (req, res) => {
     try {
       const { tokens } = await oauth2Client.getToken(code);
       console.log(tokens);
-      //const uri = "http://localhost:5173/";
-      const uri = "https://roadbuddies.onrender.com/";
+      const uri = "http://localhost:5173/";
+      // const uri = "https://roadbuddies.onrender.com/";
       // Construct the redirect URL with tokens as query parameters
       //let redirectUrl = `http://localhost:5173/?accessToken=${tokens.access_token}`;
       let redirectUrl = `${uri}?accessToken=${tokens.access_token}`;

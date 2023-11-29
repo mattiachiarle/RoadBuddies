@@ -4,6 +4,7 @@ import { Trip } from "../utils/types";
 import "../utils/css/tripInfo.css";
 import { useParams } from "react-router-dom";
 import dayjs from "dayjs";
+import { Card, CardFooter, Divider } from "@nextui-org/react";
 function TripInfo({ email }) {
   const supabase = useContext(AppContext);
   const [trip, setTrip] = useState<Trip | null>(null);
@@ -47,40 +48,44 @@ function TripInfo({ email }) {
   }
 
   return (
-    <div className="trip-info">
-      <h2>Trip Information</h2>
-      <div>
-        <strong>Start Date:</strong>{" "}
-        {dayjs(trip.start_date).format("MMMM D, YYYY")}
-      </div>
-      <div>
-        <strong>End Date:</strong> {dayjs(trip.end_date).format("MMMM D, YYYY")}
-      </div>
-      <div>
-        <strong>Start location:</strong>
-        {trip.start}
-      </div>
-      <div>
-        <strong>Destination:</strong> {trip.destination}
-      </div>
-      <div>
-        <strong>Vehicle:</strong> {trip.vehicle}
-      </div>
-      <div>
-        <strong>Participants:</strong>
-        <ul>
-          {participants?.map((participant) => (
-            <li
-              style={
-                participant === email ? { textDecoration: "underline" } : {}
-              }
-              key={participant}
-            >
-              {participant}
-            </li>
-          ))}
-        </ul>
-      </div>
+    <div style={{color:"white", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"start", gap:"10px"}}>
+      <Card className="trip-info" style={{color:"white", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"start", gap:"10px", width:"500px"}}>
+        <h2>Trip Information</h2>
+        <Divider/>
+        <div style={{display:"flex", flexDirection:"row", gap: '20px' }}>
+          <div>
+            <strong style={{color:"#db9fc7"}}>Start Date: </strong>{" "}
+            {dayjs(trip.start_date).format("MMMM D, YYYY")}
+          </div>
+          <div>
+            <strong style={{color:"#db9fc7"}}>End Date: </strong> {dayjs(trip.end_date).format("MMMM D, YYYY")}
+          </div>
+        </div>
+          <div>
+            <strong style={{color:"#db9fc7"}}>Start location: </strong>
+            {trip.start}
+          </div>
+          <div>
+            <strong style={{color:"#db9fc7"}}>Destination: </strong> {trip.destination}
+          </div>
+        <div>
+          <strong style={{color:"#db9fc7"}}>Vehicle:</strong> {trip.vehicle}
+        </div>
+        <div>
+          <strong style={{color:"#db9fc7"}}>Participants:</strong>
+            {participants?.map((participant) => (
+              <div
+                style={
+                  participant === email ? { textDecoration: "underline" } : {}
+                }
+                key={participant}
+              >
+                {participant}
+              </div>
+            ))}
+        </div>
+        <CardFooter/>
+      </Card>
     </div>
   );
 }
