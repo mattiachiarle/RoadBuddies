@@ -14,7 +14,9 @@ function Trip() {
     } else {
       // Initiate OAuth process if no tokens are found
       try {
-        const response = await axios.get('http://localhost:3000/auth/google');
+        //const url = 'http://localhost:3000/auth/google';
+        const url = 'https://roadbuddies-backend.onrender.com/auth/google';
+        const response = await axios.get(url);
         const authUrl = response.data.authUrl;
         window.location.href = authUrl;
       } catch (error) {

@@ -26,7 +26,7 @@ const api_key = process.env.CHAT_GPT_API;
 const spotify_client_id = process.env.SPOTIFY_CLIENT_ID;
 const spotify_client_secret = process.env.SPOTIFY_CLIENT_SECRET;
 const redirect_url = "https://roadbuddies-backend.onrender.com/api/callback";
-// const redirect_url = "http://localhost:3000/api/callback";
+//const redirect_url = "http://localhost:3000/api/callback";
 
 const gpt = new EasyGPT();
 gpt.setApiKey(api_key);
@@ -326,9 +326,11 @@ app.get('/auth/google/callback', async (req, res) => {
   if (code) {
     try {
       const { tokens } = await oauth2Client.getToken(code);
-
+      //const uri = "http://localhost:5173/";
+      const uri = "https://roadbuddies.onrender.com/";
       // Construct the redirect URL with tokens as query parameters
-      let redirectUrl = `http://localhost:5173/?accessToken=${tokens.access_token}`;
+      //let redirectUrl = `http://localhost:5173/?accessToken=${tokens.access_token}`;
+      let redirectUrl = `${uri}?accessToken=${tokens.access_token}`;
       if (tokens.refresh_token) {
         redirectUrl += `&refreshToken=${tokens.refresh_token}`;
       }
