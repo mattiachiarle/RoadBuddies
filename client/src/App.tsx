@@ -63,7 +63,7 @@ function App() {
                     <Route index element={<TripInfo email={email} />} />
                     <Route
                       path="editParticipants"
-                      element={<EditParticipants />}
+                      element={<EditParticipants email={email} />}
                     />{" "}
                     {/*here the edit participants?*/}
                     <Route path="editInfo" element={<EditTripInfo />} />{" "}

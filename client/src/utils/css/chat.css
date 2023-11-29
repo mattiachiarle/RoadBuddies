@@ -25,26 +25,3 @@
   align-self: flex-start;
   background-color: #f2f2f2;
 }
-
-.input-container {
-  display: flex;
-  padding: 10px;
-  border-top: 1px solid #ddd;
-}
-
-.input-container input {
-  flex: 1;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ddd;
-  margin-right: 10px;
-}
-
-.input-container button {
-  padding: 10px 15px;
-  border: none;
-  background-color: #007bff;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-}

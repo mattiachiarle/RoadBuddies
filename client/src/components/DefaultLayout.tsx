@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
-import { Row, Col, Card, Button } from "react-bootstrap";
-import AppContext from "../context/appContext";
+import { Row, Col, Button } from "react-bootstrap";
+import Container from "./Container";
+import {Card, CardBody, CardHeader } from "@nextui-org/react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 function DefaultLayout(props: { userEmail: string }) {
@@ -103,7 +104,7 @@ function DefaultLayout(props: { userEmail: string }) {
             .eq("user_id", userEmail);
 
           if (error) throw error;
-
+          console.log(tripsData)
           // Set the trips in state
           setTrips(
             tripsData.map((trip: { group: { id: number; name: string } }) => ({
@@ -125,9 +126,32 @@ function DefaultLayout(props: { userEmail: string }) {
 
   return (
     <>
-      <Row>
+       <h3 style={{color:"white", textAlign:"center"}}>Your Trips</h3>
+       <Container>
+       {trips.length > 0 ? (
+          trips.map((trip) => (
+            <Card
+              shadow="sm"
+              key={trip.id}
+              style={{ margin: "10px 0", cursor: "pointer", justifyContent:"center" }}
+              isPressable
+              onPress={() => navigate(`/trips/${trip.id}`)}
+            >
+              <div style={{display:"flex",width:"100%", flexDirection:"column", alignItems:"center"}}>{trip.name}</div>
+
+            </Card>
+          ))
+          )
+          :
+          (
+            <p>No trips found.</p>
+          )
+
+        }
+        </Container>
+      {/* <Row>
         <Col>
-          <h3>Your Trips</h3>
+          <h3 style={{color:"white"}}>Your Trips</h3>
           {trips.length > 0 ? (
             trips.map((trip) => (
               <Card
@@ -151,7 +175,7 @@ function DefaultLayout(props: { userEmail: string }) {
         >
           Add Trip
         </Button>
-      </Row>
+      </Row> */}
     </>
   );
 }
