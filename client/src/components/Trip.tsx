@@ -4,23 +4,22 @@ import axios from "axios";
 function Trip() {
   const navigate = useNavigate();
   const handleCalendarClick = async () => {
+    const accessToken = localStorage.getItem("google_access_token");
+    const refreshToken = localStorage.getItem("google_refresh_token");
 
-    const accessToken = localStorage.getItem('google_access_token');
-    const refreshToken = localStorage.getItem('google_refresh_token');
-
-    if (accessToken || refreshToken) {
+    if (accessToken && refreshToken) {
       // Navigate to CalendarComponent if tokens are present
-      navigate('calendar');
+      navigate("calendar");
     } else {
       // Initiate OAuth process if no tokens are found
       try {
         //const url = 'http://localhost:3000/auth/google';
-        const url = 'https://roadbuddies-backend.onrender.com/auth/google';
+        const url = "https://roadbuddies-backend.onrender.com/auth/google";
         const response = await axios.get(url);
         const authUrl = response.data.authUrl;
         window.location.href = authUrl;
       } catch (error) {
-        console.error('Error initiating OAuth:', error);
+        console.error("Error initiating OAuth:", error);
         // Handle error (e.g., show error message)
       }
     }
@@ -88,9 +87,9 @@ function Trip() {
             </Row>
             <Row>
               <Button
-                  onClick={handleCalendarClick}
-                  variant="primary"
-                  style={{ border: "1px solid black" }}
+                onClick={handleCalendarClick}
+                variant="primary"
+                style={{ border: "1px solid black" }}
               >
                 Calendars
               </Button>

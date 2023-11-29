@@ -8,7 +8,7 @@ import {
   createCalendar,
   deleteCalendar,
   addPeopleToCalendar,
-  getCalendarEvent
+  getCalendarEvent,
 } from "./utils/calendarUtils.js";
 
 const PORT = 3000;
@@ -21,7 +21,7 @@ import { createClient } from "@supabase/supabase-js";
 import querystring from "querystring";
 import request from "request";
 
-import oauth2Client from './googleAuth.js';
+import oauth2Client from "./googleAuth.js";
 const api_key = process.env.CHAT_GPT_API;
 const spotify_client_id = process.env.SPOTIFY_CLIENT_ID;
 const spotify_client_secret = process.env.SPOTIFY_CLIENT_SECRET;
@@ -285,10 +285,10 @@ app.post("/api/askChatGpt", async (req, res) => {
 });
 
 //Google Docs stuff
-app.get('/auth/google', (req, res) => {
+app.get("/auth/google", (req, res) => {
   const authUrl = oauth2Client.generateAuthUrl({
-    access_type: 'offline',
-    scope: ['https://www.googleapis.com/auth/calendar'],
+    access_type: "offline",
+    scope: ["https://www.googleapis.com/auth/calendar"],
   });
   //res.redirect(authUrl);
   res.json({ authUrl }); // Send the URL back to the frontend
@@ -320,12 +320,13 @@ app.get('/auth/google', (req, res) => {
 //     res.status(400).send('Invalid request, authorization code is missing');
 //   }
 // });
-app.get('/auth/google/callback', async (req, res) => {
+app.get("/auth/google/callback", async (req, res) => {
   const { code } = req.query;
 
   if (code) {
     try {
       const { tokens } = await oauth2Client.getToken(code);
+      console.log(tokens);
       //const uri = "http://localhost:5173/";
       const uri = "https://roadbuddies.onrender.com/";
       // Construct the redirect URL with tokens as query parameters
@@ -338,34 +339,34 @@ app.get('/auth/google/callback', async (req, res) => {
       // Redirect the user to the frontend with the tokens
       res.redirect(redirectUrl);
     } catch (error) {
-      console.error('Error exchanging code for tokens', error);
-      res.status(500).send('Authentication error');
+      console.error("Error exchanging code for tokens", error);
+      res.status(500).send("Authentication error");
     }
   } else {
-    res.status(400).send('Invalid request, authorization code is missing');
+    res.status(400).send("Invalid request, authorization code is missing");
   }
 });
 
-app.get('/api/calendar/events', async (req, res) => {
+app.get("/api/calendar/events", async (req, res) => {
   try {
-    const calendarId = req.query.calendarId || 'primary'; // Use query parameter or default to 'primary'
+    const calendarId = req.query.calendarId || "primary"; // Use query parameter or default to 'primary'
     const events = await listCalendarEvents(oauth2Client, calendarId);
     res.json(events);
   } catch (error) {
-    res.status(500).send('Error fetching calendar events');
+    res.status(500).send("Error fetching calendar events");
   }
 });
 
-app.post('/api/calendar/event', async (req, res) => {
+app.post("/api/calendar/event", async (req, res) => {
   try {
     const authHeader = req.headers.authorization;
-    const refreshToken = req.headers['refresh-token']; // Assume the refresh token is sent in a custom header
+    const refreshToken = req.headers["refresh-token"]; // Assume the refresh token is sent in a custom header
 
     if (!authHeader || !refreshToken) {
-      return res.status(401).send('No authorization or refresh token provided');
+      return res.status(401).send("No authorization or refresh token provided");
     }
 
-    const accessToken = authHeader.split(' ')[1];
+    const accessToken = authHeader.split(" ")[1];
     oauth2Client.setCredentials({ access_token: accessToken });
 
     const createEvent = async () => {
@@ -387,22 +388,21 @@ app.post('/api/calendar/event', async (req, res) => {
     const newEvent = await createEvent();
     res.json(newEvent);
   } catch (error) {
-    console.error('Error creating calendar event', error);
-    res.status(500).send('Error creating calendar event');
+    console.error("Error creating calendar event", error);
+    res.status(500).send("Error creating calendar event");
   }
 });
 
-
-app.get('/api/calendar/event/:eventId', async (req, res) => {
+app.get("/api/calendar/event/:eventId", async (req, res) => {
   try {
     const authHeader = req.headers.authorization;
-    const refreshToken = req.headers['refresh-token']; // Assume the refresh token is sent in a custom header
+    const refreshToken = req.headers["refresh-token"]; // Assume the refresh token is sent in a custom header
 
     if (!authHeader || !refreshToken) {
-      return res.status(401).send('No authorization or refresh token provided');
+      return res.status(401).send("No authorization or refresh token provided");
     }
 
-    const accessToken = authHeader.split(' ')[1];
+    const accessToken = authHeader.split(" ")[1];
     oauth2Client.setCredentials({ access_token: accessToken });
 
     // Function to refresh access token
@@ -433,58 +433,66 @@ app.get('/api/calendar/event/:eventId', async (req, res) => {
     const event = await getEvent(eventId);
     res.json(event);
   } catch (error) {
-    console.error('Error retrieving calendar event', error);
-    res.status(500).send('Error retrieving calendar event');
+    console.error("Error retrieving calendar event", error);
+    res.status(500).send("Error retrieving calendar event");
   }
 });
 
 // Route to update a calendar event
-app.put('/api/calendar/event/:eventId', async (req, res) => {
+app.put("/api/calendar/event/:eventId", async (req, res) => {
   try {
-    const updatedEvent = await updateCalendarEvent(oauth2Client, req.params.eventId, req.body);
+    const updatedEvent = await updateCalendarEvent(
+      oauth2Client,
+      req.params.eventId,
+      req.body
+    );
     res.json(updatedEvent);
   } catch (error) {
-    res.status(500).send('Error updating calendar event');
+    res.status(500).send("Error updating calendar event");
   }
 });
 
 // Route to delete a calendar event
-app.delete('/api/calendar/event/:eventId', async (req, res) => {
+app.delete("/api/calendar/event/:eventId", async (req, res) => {
   try {
     await deleteCalendarEvent(oauth2Client, req.params.eventId);
-    res.send('Event deleted successfully');
+    res.send("Event deleted successfully");
   } catch (error) {
-    res.status(500).send('Error deleting calendar event');
+    res.status(500).send("Error deleting calendar event");
   }
 });
 
 // Route to create a new calendar
-app.post('/api/calendar', async (req, res) => {
+app.post("/api/calendar", async (req, res) => {
   try {
     const newCalendar = await createCalendar(oauth2Client, req.body);
     res.json(newCalendar);
   } catch (error) {
-    res.status(500).send('Error creating calendar');
+    res.status(500).send("Error creating calendar");
   }
 });
 
 // Route to delete a calendar
-app.delete('/api/calendar/:calendarId', async (req, res) => {
+app.delete("/api/calendar/:calendarId", async (req, res) => {
   try {
     await deleteCalendar(oauth2Client, req.params.calendarId);
-    res.send('Calendar deleted successfully');
+    res.send("Calendar deleted successfully");
   } catch (error) {
-    res.status(500).send('Error deleting calendar');
+    res.status(500).send("Error deleting calendar");
   }
 });
 
 // Route to add people to a calendar
-app.post('/api/calendar/:calendarId/people', async (req, res) => {
+app.post("/api/calendar/:calendarId/people", async (req, res) => {
   try {
-    const acl = await addPeopleToCalendar(oauth2Client, req.params.calendarId, req.body.emailAddresses);
+    const acl = await addPeopleToCalendar(
+      oauth2Client,
+      req.params.calendarId,
+      req.body.emailAddresses
+    );
     res.json(acl);
   } catch (error) {
-    res.status(500).send('Error adding people to calendar');
+    res.status(500).send("Error adding people to calendar");
   }
 });
 
