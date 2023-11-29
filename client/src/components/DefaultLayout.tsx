@@ -35,38 +35,58 @@ function DefaultLayout(props: { userEmail: string }) {
       const accessToken = searchParams.get("accessToken");
       const refreshToken = searchParams.get("refreshToken");
 
-      console.log(accessToken);
-      console.log(refreshToken);
-      console.log(userEmail);
-
-      // Store tokens and remove from URL
-      if (accessToken && userEmail) {
+      if (accessToken) {
         localStorage.setItem("google_access_token", accessToken);
-        if (refreshToken) {
-          console.log(userEmail);
-          console.log(refreshToken);
-          const { data, error } = await supabase
-            .from("user")
-            .update([{ google_refresh_token: refreshToken }])
-            .eq("user_id", userEmail)
-            .select();
-          localStorage.setItem("google_refresh_token", refreshToken);
-          // if (error) {
-          console.log(data);
-          console.log("Supabase error " + error);
-          // }
-        } else {
-          const refresh_token = await supabase
-            .from("user")
-            .select("google_refresh_token")
-            .eq("user_id", userEmail);
-          localStorage.setItem(
-            "google_refresh_token",
-            refresh_token.google_refresh_token
-          );
-        }
-        // removeTokenFromUrl();
       }
+      if (refreshToken) {
+        localStorage.setItem("google_refresh_token", refreshToken);
+      }
+
+      const local_refresh_token = localStorage.getItem("google_refresh_token");
+
+      if (local_refresh_token && userEmail) {
+        const { error } = await supabase
+          .from("user")
+          .update([{ google_refresh_token: refreshToken }])
+          .eq("user_id", userEmail);
+      } else {
+        const refresh_token = await supabase
+          .from("user")
+          .select("google_refresh_token")
+          .eq("user_id", userEmail);
+        localStorage.setItem(
+          "google_refresh_token",
+          refresh_token.google_refresh_token
+        );
+      }
+      // if (accessToken && userEmail) {
+      //   // Store tokens and remove from URL
+      //   localStorage.setItem("google_access_token", accessToken);
+      //   if (refreshToken) {
+      //     console.log(userEmail);
+      //     console.log(refreshToken);
+      //     const { data, error } = await supabase
+      //       .from("user")
+      //       .update([{ google_refresh_token: refreshToken }])
+      //       .eq("user_id", userEmail)
+      //       .select();
+      //     localStorage.setItem("google_refresh_token", refreshToken);
+      //     // if (error) {
+      //     console.log(data);
+      //     console.log("Supabase error " + error);
+      //     // }
+      //   } else {
+      //     const refresh_token = await supabase
+      //       .from("user")
+      //       .select("google_refresh_token")
+      //       .eq("user_id", userEmail);
+      //     localStorage.setItem(
+      //       "google_refresh_token",
+      //       refresh_token.google_refresh_token
+      //     );
+      //   }
+      removeTokenFromUrl();
+      // }
     };
     const fetchTrips = async () => {
       if (userEmail) {
@@ -95,7 +115,7 @@ function DefaultLayout(props: { userEmail: string }) {
 
     fetchTrips();
     checkGoogleTokens();
-  }, [userEmail, navigate]);
+  }, [userEmail]);
 
   return (
     <>
