@@ -16,8 +16,8 @@ function CalendarComponent() {
 
     const handleCalendarClick = async () => {
           try {
-            const url = 'http://localhost:3000/auth/google';
-            // const url = "https://roadbuddies-backend.onrender.com/auth/google";
+            // const url = 'http://localhost:3000/auth/google';
+            const url = "https://roadbuddies-backend.onrender.com/auth/google";
             const response = await axios.get(url);
             const authUrl = response.data.authUrl;
             window.location.href = authUrl;

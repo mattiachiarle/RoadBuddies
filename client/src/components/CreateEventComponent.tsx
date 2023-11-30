@@ -107,8 +107,8 @@ export default function CreateEventComponent() {
     }
 
     try {
-      const url = 'http://localhost:3000/api/calendar/event';
-      // const url = "https://roadbuddies-backend.onrender.com/api/calendar/event";
+      // const url = 'http://localhost:3000/api/calendar/event';
+      const url = "https://roadbuddies-backend.onrender.com/api/calendar/event";
       const response = await axios.post(url, finalEventDetails, {
         headers: {
           Authorization: `Bearer ${accessToken}`,

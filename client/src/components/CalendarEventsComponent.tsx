@@ -29,8 +29,8 @@ export default function CalendarEventsComponent() {
 
                 // Fetch details for each event
                 const fetchedEvents = await Promise.all(eventIds.map(async (eventId) => {
-                    const uri = `http://localhost:3000/api/calendar/event/${eventId}`;
-                    // const uri = `https://roadbuddies-backend.onrender.com/api/calendar/event/${eventId}`;
+                    // const uri = `http://localhost:3000/api/calendar/event/${eventId}`;
+                    const uri = `https://roadbuddies-backend.onrender.com/api/calendar/event/${eventId}`;
                     const response = await axios.get(uri, {
                         headers: { Authorization: `Bearer ${accessToken}`,
                             'Refresh-Token': refreshToken}
