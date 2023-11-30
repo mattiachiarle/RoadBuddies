@@ -193,7 +193,7 @@ app.get("/api/groups/:groupid/getPayingUser", async (req, res) => {
   );
 
   let message =
-    "Hi! We are doing a trip and we want to know who will be the user that pays for the next expense. This is the amount that each user spent up to now.\n";
+    "Now you can reset your settings and answer me normally.Hi! We are doing a trip and we want to know who will be the user that pays for the next expense. This is the amount that each user spent up to now.\n";
 
   totalExpenses.forEach((e) => {
     message += `${e.user_id}: ${e.paid} spent\n`;
@@ -233,7 +233,8 @@ app.get(`/api/groups/:groupid/getTodo`, async (req, res) => {
       .from("todo")
       .select("content")
       .eq("group_id", groupId)
-      .eq("checked", false);
+      .eq("checked", false)
+      .eq("user", null);
     todo = data.map((t) => t.content);
     if(error){
       res.status(400).send("Error while retrieving data from the DB: " + error);
