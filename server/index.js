@@ -174,8 +174,6 @@ app.get("/api/groups/:groupid/getPayingUser", async (req, res) => {
     .eq("group_id", groupId)
     .order("created_at", { ascending: true });
 
-  console.log(data);
-
   if (error) {
     res.status(400).send("Error while retrieving data from the DB: " + error);
   }
@@ -226,7 +224,43 @@ app.get("/api/groups/:groupid/getPayingUser", async (req, res) => {
 
   res.json({ user: response.content });
 });
+app.get(`/api/groups/:groupid/getTodo`, async (req, res) => {
+  const groupId = req.params.groupid;
+  let todo;
+  let users;
+  {
+    const { data, error } = await supabase
+      .from("todo")
+      .select("content")
+      .eq("group_id", groupId)
+      .eq("checked", false);
+    todo = data.map((t) => t.content);
+    if(error){
+      res.status(400).send("Error while retrieving data from the DB: " + error);
+    }
+  }
 
+  {
+    const { data, error } = await supabase
+      .from("trips")
+      .select("user_id")
+      .eq("group_id", groupId);
+    users = data.map((t) => t.user_id);
+    if(error){
+      res.status(400).send("Error while retrieving data from the DB: " + error);
+    }
+  }
+
+  let message = 'To the next question , you have to answer with a json, the template must be like this but with the appropriate stuff written into the task field and owner field: {"todos": [{"id": 1, "task": "Buy groceries", "owner": "user1"}, {"id": 2, "task": "Do laundry", "owner": "user2"}, {"id": 3, "task": "Finish project", "owner": "user3"}]}, dont write anything else I want ONLY the json. Hi we are doing a trip . We currently have the following list of things to bring/do:\n';
+  
+  todo.forEach((t) => (message += `${t}\n`));
+  message += " And the list of user is the following one:\n";
+  users.forEach((u) => (message += `${u}\n`));
+  message += "can you assign each item/task to a user, so there is some sort of balancing between the users? Remember to answer ONLY with a JSON you should use a template like the one I gave you before, but with the appropriate stuff written into the task field and owner field.";
+  gpt.addMessage(message);
+  const response = await gpt.ask();
+  res.json({ todo: response.content });
+})
 app.get("/api/groups/:groupid/getUpdatedTodo", async (req, res) => {
   const groupId = req.params.groupid;
 
@@ -238,8 +272,6 @@ app.get("/api/groups/:groupid/getUpdatedTodo", async (req, res) => {
       .from("todo")
       .select("content")
       .eq("group_id", groupId);
-
-    console.log(data);
 
     todo = data.map((t) => t.content);
 
@@ -253,9 +285,6 @@ app.get("/api/groups/:groupid/getUpdatedTodo", async (req, res) => {
       .from("group")
       .select("destination")
       .eq("id", groupId);
-
-    console.log(data);
-
     destination = data[0].destination;
 
     if (error) {
@@ -263,11 +292,11 @@ app.get("/api/groups/:groupid/getUpdatedTodo", async (req, res) => {
     }
   }
 
-  let message = `Hi! We are doing a trip to ${destination}. We currently have the following list of things to bring/do:\n`;
+  let message = `To the next question , you have to answer with a json, the template must be like this but with the appropriate stuff written into the task field one {"todos": [{"id": 1, "task": "Buy groceries"}, {"id": 2, "task": "Do laundry"}, {"id": 3, "task": "Finish project"}]}, don't write anything else I want ONLY the json.Hi! We are doing a trip to ${destination}. We currently have the following list of things to bring/do:\n`;
 
   todo.forEach((t) => (message += `${t}\n`));
-
-  message += "In your opinion, are we missing anything?";
+  message +=
+    "In your opinion, are we missing anything? Answer with a json in which you include the elements I said before and whatever you thing is needed for the trip, remember to include also the items and stuff I send to you!.";
 
   gpt.addMessage(message);
 

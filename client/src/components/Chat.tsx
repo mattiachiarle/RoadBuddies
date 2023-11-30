@@ -4,7 +4,7 @@ import { Message } from "../utils/types";
 import "../utils/css/chat.css";
 import { useParams } from "react-router-dom";
 import { Button, Input } from "@nextui-org/react";
-import { getPayingUser, queryChatGpt, getUpdatedTodo } from "../API.js";
+import { getPayingUser, queryChatGpt, getUpdatedTodo, getTodoWithCheck } from "../API.js";
 
 function Chat({ email }) {
   const [messages, setMessages] = useState<Array<Message>>([]);
@@ -100,15 +100,23 @@ function Messages({ messages, currentUser }) {
       {messages.map((message,idx) =>(
         message.user_id === currentUser? 
         (
-          <div style={{display:"flex", flexDirection:"row-reverse"}}>
+          <div key={idx} style={{display:"flex", flexDirection:"row-reverse"}}>
             <span style={{borderRadius:" 20px",backgroundColor: "#e6f7ff", maxWidth:"80%",  padding:"8px"}}>{message.user_id}: {message.content}</span>
           </div>
         )   
         :
-        (
-          <div style={{display:"flex", flexDirection:"row"}}>
-            <span style={{borderRadius:"20px",backgroundColor: "#f2f2f2", maxWidth:"80%", padding:"8px"}}>{message.user_id}: {message.content}</span>
+        (message.user_id === "chatGPT@bot"?
+          (
+            <div key={idx} style={{display:"flex", flexDirection:"row"}}>
+            <span style={{borderRadius:"20px",backgroundColor: "#00A867", maxWidth:"80%", padding:"8px"}}>{message.user_id}: {message.content}</span>
           </div>
+          )
+          :
+          (
+            <div  key={idx} style={{display:"flex", flexDirection:"row"}}>
+              <span style={{borderRadius:"20px",backgroundColor: "#f2f2f2", maxWidth:"80%", padding:"8px"}}>{message.user_id}: {message.content}</span>
+            </div>
+          )
         )
          ))}
     </div>
@@ -153,7 +161,7 @@ function InputBox(props) {
             message.split("@chatgpt")[1]
           );
           const { error } = await supabase.from("messages").insert({
-            user_id: props.username,
+            user_id: "chatGPT@bot",
             content: response_message,
             group_id: props.group,
           });
@@ -189,7 +197,7 @@ function InputBox(props) {
 
       const payingUser = await getPayingUser(tripId);
       const { error } = await supabase.from("messages").insert({
-        user_id: props.username,
+        user_id: "chatGPT@bot",
         content: payingUser,
         group_id: props.group,
       });
@@ -201,7 +209,69 @@ function InputBox(props) {
       console.log(error);
     }
   };
+  async function modifyTodos(todos: { id: number, task: string, owner: string }[]) {
+    for(const todo of todos) {
+      const{data: existingTodos, error: fetchError} = await supabase
+      .from('todo')
+      .select('content, checked')
+      .eq('content', todo.task)
+      .eq('checked', false);
+      if (fetchError) {
+        console.error(fetchError);
+        continue;
+      }
+      if (existingTodos.length){
+        const { error: updateError } = await supabase
+          .from('todo')
+          .update({user: todo.owner})
+          .eq('content', todo.task)
+          .eq('checked', false);
 
+        if (updateError) {
+          console.error(updateError);
+        }
+      }
+    }
+  }
+  async function addToDos(todos: { id: number, task: string }[]) {
+    for (const todo of todos) {
+      // Check if the todo item already exists in the database
+      const { data: existingTodos, error: fetchError } = await supabase
+        .from('todo')
+        .select('content')
+        .eq('content', todo.task);
+  
+      if (fetchError) {
+        console.error(fetchError);
+        continue;
+      }
+  
+      if (!existingTodos.length) {
+        const { error: insertError } = await supabase
+          .from('todo')
+          .insert([
+            { group_id: tripId, checked: false, content: todo.task, user: null },
+          ])
+        if (insertError) {
+          console.error(insertError);
+        }
+      }
+    }
+  }
+  function changeIntoMessage2(todoList: { todos: { id: number, task: string, owner: string }[] }) {
+    modifyTodos(todoList.todos)  //await?
+    const message = "Done!";
+    return message;
+  }
+  function changeIntoMessage(todoList: { todos: { id: number, task: string }[] }) {
+    addToDos(todoList.todos)  //await?
+    let message = "Here are some things you might want to bring on your trip:\n";
+    for (const todo of todoList.todos) {
+      message += `- ${todo.task}\n`;
+    }
+    message += ". I have already added everything to your list! Have a great trip!";
+    return message;
+  }
   const askTodo = async () => {
     try {
       {
@@ -220,8 +290,8 @@ function InputBox(props) {
 
       const todos = await getUpdatedTodo(tripId);
       const { error } = await supabase.from("messages").insert({
-        user_id: props.username,
-        content: todos,
+        user_id: "chatGPT@bot",
+        content: changeIntoMessage(JSON.parse(todos)),
         group_id: props.group,
       });
 
@@ -232,7 +302,37 @@ function InputBox(props) {
       console.log(error);
     }
   };
+  const askToAssign = async () => {
+    try {
+      {
+        const { error } = await supabase.from("messages").insert({
+          user_id: props.username,
+          content: "@chatgpt assign all the todo",
+          group_id: props.group,
+        });
 
+        if (error) {
+          throw error;
+        } else {
+          setMessage("");
+        }
+      }
+
+      const todos = await getTodoWithCheck(tripId);
+      console.log(todos)
+      const { error } = await supabase.from("messages").insert({
+        user_id: "chatGPT@bot",
+        content: changeIntoMessage2(JSON.parse(todos)),
+        group_id: props.group,
+      });
+
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
   const changeMessage = (ev: React.ChangeEvent<HTMLInputElement>) => {
     setMessage(ev.target.value);
   };
@@ -277,7 +377,16 @@ function InputBox(props) {
           }}
         >
         What's missing from the To-do list?
-      </Button> 
+      </Button>
+      <Button
+      variant="ghost"
+      color="warning"
+          onClick={() => {
+            askToAssign();
+          }}
+          >
+          Assign all the To-do
+      </Button>
       </div>
       <div style={{color:"GrayText"}}>
           You can ask anything to chatgpt by writing a message starting with

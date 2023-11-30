@@ -69,24 +69,80 @@ function EditTripInfo() {
 
   return (
     <>
-      <div style={{display:"flex", flexDirection:"column", gap:"1rem"}}>
-        <div style ={{display:"flex", flexDirection:"row", gap:"2rem"}}>     
-          <Input type="date" name="start_date" value={trip.start_date} isInvalid={err} label="Start Date" onChange={handleInputChange}/>
-          <Input type="date" name="end_date" value={trip.end_date} isInvalid={err} errorMessage={err && "Start date must be before end date"} label="End Date" onChange={handleInputChange}/>
+      <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+        <div style={{ display: "flex", flexDirection: "row", gap: "2rem" }}>
+          <Input
+            type="date"
+            name="start_date"
+            value={trip.start_date}
+            isInvalid={err}
+            label="Start Date"
+            onChange={handleInputChange}
+          />
+          <Input
+            type="date"
+            name="end_date"
+            value={trip.end_date}
+            isInvalid={err}
+            errorMessage={err && "Start date must be before end date"}
+            label="End Date"
+            onChange={handleInputChange}
+          />
         </div>
-        <div style ={{display:"flex", flexDirection:"row", gap:"2rem"}}>
-          <Input type="text" name="start" value={trip.start} label="Start Location" onChange={handleInputChange}/>
-          <Input type="text" name="destination" label="Destination" value={trip.destination} onChange={handleInputChange}/>
+        <div style={{ display: "flex", flexDirection: "row", gap: "2rem" }}>
+          <Input
+            type="text"
+            name="start"
+            value={trip.start}
+            label="Start Location"
+            onChange={handleInputChange}
+          />
+          <Input
+            type="text"
+            name="destination"
+            label="Destination"
+            value={trip.destination}
+            onChange={handleInputChange}
+          />
         </div>
-          <Select label="Vehicle" name="vehicle" defaultSelectedKeys={[trip.vehicle]} onChange={(event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => handleInputChange(event)}>
-            <SelectItem key="Car" value="Car" style={{color:"white"}}>Car</SelectItem>
-            <SelectItem key="Motorbike" value="Motorbike" style={{color:"white"}}>Motorbike</SelectItem>
-            <SelectItem key="Bicycle" value="Bicycle" style={{color:"white"}} >Bicycle</SelectItem>
-            <SelectItem key="On foot" value="On foot" style={{color:"white"}}>On foot</SelectItem>
-            <SelectItem key="Airplane" value="Airplane" style={{color:"white"}}>Airplane</SelectItem>
-            <SelectItem key="Train" value="Train" style={{color:"white"}}>Train</SelectItem>
-          </Select>
-        <Button onClick={handleSubmit} value="Update Trip">Submit</Button>
+        <Select
+          label="Vehicle"
+          name="vehicle"
+          defaultSelectedKeys={[trip.vehicle]}
+          onChange={(
+            event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+          ) => handleInputChange(event)}
+        >
+          <SelectItem key="Car" value="Car" style={{ color: "white" }}>
+            Car
+          </SelectItem>
+          <SelectItem
+            key="Motorbike"
+            value="Motorbike"
+            style={{ color: "white" }}
+          >
+            Motorbike
+          </SelectItem>
+          <SelectItem key="Bicycle" value="Bicycle" style={{ color: "white" }}>
+            Bicycle
+          </SelectItem>
+          <SelectItem key="On foot" value="On foot" style={{ color: "white" }}>
+            On foot
+          </SelectItem>
+          <SelectItem
+            key="Airplane"
+            value="Airplane"
+            style={{ color: "white" }}
+          >
+            Airplane
+          </SelectItem>
+          <SelectItem key="Train" value="Train" style={{ color: "white" }}>
+            Train
+          </SelectItem>
+        </Select>
+        <Button onClick={handleSubmit} value="Update Trip">
+          Submit
+        </Button>
       </div>
     </>
   );

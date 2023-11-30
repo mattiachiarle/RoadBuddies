@@ -89,7 +89,7 @@ function EditParticipants(email) {
     >
       <h2>Edit Participants</h2>
       {participants.map((participant, index) => (
-        <div style={{ display: "flex", flexDirection: "row", gap: "1rem" }}>
+        <div key={index} style={{ display: "flex", flexDirection: "row", gap: "1rem" }}>
           <div>{participant}</div>
           {email.email !== participant && (
             <IoPersonRemove

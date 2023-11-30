@@ -19,7 +19,6 @@ function AddTransaction() {
       if (error) {
         console.error("Error fetching participants:", error);
       } else if (data) {
-        console.log(data)
         setParticipants(data.map((item) => item.user_id));
       }
     };

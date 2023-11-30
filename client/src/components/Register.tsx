@@ -11,7 +11,7 @@ function Register() {
   const navigate = useNavigate();
   const supabase = useContext(AppContext);
 
-  const onSubmit = async (e) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // Prevent the form from submitting the traditional way
     try {
       setErr("");

@@ -106,7 +106,6 @@ function DefaultLayout(props: { userEmail: string }) {
             .eq("user_id", userEmail);
 
           if (error) throw error;
-          console.log(tripsData)
           // Set the trips in state
           setTrips(
             tripsData.map((trip: { group: { id: number; name: string } }) => ({

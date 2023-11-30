@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from "react";
 import AppContext from "../context/appContext";
 import { useParams } from "react-router-dom";
-import { Todo } from "../utils/types";
+import { Todo, User } from "../utils/types";
 import { Form, Button, Row, Dropdown } from "react-bootstrap";
 import "../utils/css/todo.css";
-function EditToDo({ email }) {
+function EditToDo({ email }: { email: string }) {
   const supabase = useContext(AppContext);
   const [todos, setTodos] = useState<Array<Todo>>([]);
   const [newTodo, setNewTodo] = useState("");
@@ -33,7 +33,7 @@ function EditToDo({ email }) {
       } else if (participantData) {
         // Assuming that the user_id is the participant
         const participants = participantData.map(
-          (participant) => participant.user_id,
+          (participant: User) => participant.user_id
         );
         setParticipants(participants);
       }
@@ -42,11 +42,13 @@ function EditToDo({ email }) {
     fetchTodos();
   }, [supabase, tripId, email]);
 
-  const handleNewTodoChange = (event) => {
+  const handleNewTodoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewTodo(event.target.value);
   };
 
-  const handleNewTodoSubmit = async (event) => {
+  const handleNewTodoSubmit = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
     event.preventDefault();
     console.log(newTodo.trim);
     if (newTodo.trim() == "") {
@@ -68,7 +70,7 @@ function EditToDo({ email }) {
     }
   };
 
-  const handleTodoToggle = async (todo) => {
+  const handleTodoToggle = async (todo: Todo) => {
     const { data, error } = await supabase
       .from("todo")
       .update({ checked: !todo.checked })
@@ -79,13 +81,14 @@ function EditToDo({ email }) {
       console.error("Error updating todo:", error);
     } else if (data) {
       setTodos(
-        todos.map((t) =>
-          t.id === todo.id ? { ...t, checked: !t.checked } : t,
-        ),
+        todos.map((t) => (t.id === todo.id ? { ...t, checked: !t.checked } : t))
       );
     }
   };
-  const handleUserSelect = async (selectedUser, todoId) => {
+  const handleUserSelect = async (
+    selectedUser: string | null,
+    todoId: number
+  ) => {
     const { error } = await supabase
       .from("todo")
       .update({ user: selectedUser })
@@ -97,7 +100,7 @@ function EditToDo({ email }) {
     } else {
       // Update the local state if necessary
       const updatedTodos = todos.map((todo) =>
-        todo.id === todoId ? { ...todo, user: selectedUser } : todo,
+        todo.id === todoId ? { ...todo, user: selectedUser! } : todo
       );
       setTodos(updatedTodos);
     }
