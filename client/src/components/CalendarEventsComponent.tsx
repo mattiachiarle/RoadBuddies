@@ -71,7 +71,9 @@ export default function CalendarEventsComponent() {
        <h3 style={{color:"white", textAlign:"center"}}>Your Trips</h3>
        <Container>
        {events.length > 0 ? (
-          events.map((event : MyEvent, index) => (
+          events
+          .sort((a, b) => new Date(a.start.dateTime).getTime() - new Date(b.start.dateTime).getTime())
+          .map((event : MyEvent, index) => (
             <Card
               shadow="sm"
               key={index}

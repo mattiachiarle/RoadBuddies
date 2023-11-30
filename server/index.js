@@ -296,7 +296,7 @@ app.get("/api/groups/:groupid/getUpdatedTodo", async (req, res) => {
 
   todo.forEach((t) => (message += `${t}\n`));
   message +=
-    "In your opinion, are we missing anything? Answer with a json in which you include the elements I said before and whatever you thing is needed for the trip, remember to include also the items and stuff I send to you!.";
+    "In your opinion, are we missing anything? Answer with a json in which you include the elements I said before and whatever you thing is needed for the trip, remember to include also the items and stuff I send to you and add the new item in the json!.";
 
   gpt.addMessage(message);
 
