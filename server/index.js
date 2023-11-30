@@ -256,7 +256,7 @@ app.get(`/api/groups/:groupid/getTodo`, async (req, res) => {
   todo.forEach((t) => (message += `${t}\n`));
   message += " And the list of user is the following one:\n";
   users.forEach((u) => (message += `${u}\n`));
-  message += "can you assign each item/task to a user, so there is some sort of balancing between the users? Remember to answer ONLY with a JSON you should use a template like the one I gave you before, but with the appropriate stuff written into the task field and owner field.";
+  message += "can you assign each item/task to a user NOT CONSIDER THE ONE I GAVE YOU IN THE INITIAL TEMPLATE; BUT JUST THE LIST I GAVE YOU, if the list is composed by only one just assign everything to that single , so there is some sort of balancing between the users? Remember to answer ONLY with a JSON you should use a template like the one I gave you before, but with the appropriate stuff written into the task field and owner field.";
   gpt.addMessage(message);
   const response = await gpt.ask();
   res.json({ todo: response.content });
