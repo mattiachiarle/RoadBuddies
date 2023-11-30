@@ -1,8 +1,8 @@
-// const url = "https://roadbuddies-backend.onrender.com";
-const url = "http://localhost:3000";
+const url = "https://roadbuddies-backend.onrender.com";
+// const url = "http://localhost:3000";
 
-// const redirect_url = "https://roadbuddies-backend.onrender.com/api/callback";
-const redirect_url = "http://localhost:3000/api/callback";
+const redirect_url = "https://roadbuddies-backend.onrender.com/api/callback";
+// const redirect_url = "http://localhost:3000/api/callback";
 const spotify_client_id = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
 
 async function getPayingUser(groupId) {
