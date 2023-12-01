@@ -68,6 +68,7 @@ function Login({ email, updateEmail }) {
           flexDirection: "column",
         }}
       >
+        <form onSubmit={onSubmit}>
         <Card>
           <CardHeader style={{ justifyContent: "center" }}>
             <h1>RoadBuddies</h1>
@@ -76,6 +77,7 @@ function Login({ email, updateEmail }) {
           <CardBody>
             <div className="flex w-full flex-wrap sd:flex-nowrap gap-3">
               <Input
+                autoComplete="on"
                 type="email"
                 value={username}
                 isInvalid={invalid}
@@ -86,6 +88,7 @@ function Login({ email, updateEmail }) {
                 placeholder="email"
               />
               <Input
+                autoComplete="on"
                 type="password"
                 onKeyDown={submitWhenEnter}
                 isInvalid={invalid}
@@ -103,13 +106,14 @@ function Login({ email, updateEmail }) {
             style={{ padding: "15px" }}
             className="flex w-full flex-wrap sd:flex-nowrap gap-3"
           >
-            <Button type="submit" onClick={onSubmit}>
+            <Button type="submit">
               Submit
             </Button>
             <Button onClick={() => navigate("/")}>Cancel</Button>
             <Button onClick={() => navigate("/register")}>Register</Button>
           </CardFooter>
         </Card>
+        </form>
       </div>
     </>
   );

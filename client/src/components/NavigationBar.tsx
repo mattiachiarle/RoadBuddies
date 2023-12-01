@@ -19,9 +19,10 @@ function NavigationBar(props: {
   const currentUrl = location.pathname;
   const matchLogin = useMatch("/login");
   const matchHomepage = useMatch("/");
+  const matchRegister = useMatch("/register");
   const matchCreateTrip = useMatch("/createTrip");
   const matchTrip = useMatch("/trips/:tripId");
-  const hide = matchLogin || matchHomepage || matchCreateTrip;
+  const hide = matchLogin || matchHomepage || matchCreateTrip || matchRegister;
   const navigate = useNavigate();
   const email = props && props.email;
   const supabase = useContext(AppContext);
