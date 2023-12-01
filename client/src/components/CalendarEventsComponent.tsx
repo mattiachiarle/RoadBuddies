@@ -68,7 +68,7 @@ export default function CalendarEventsComponent() {
 
     return (
         <>
-       <h3 style={{color:"white", textAlign:"center"}}>Your Trips</h3>
+       <h3 style={{color:"white", textAlign:"center"}}>Your Events</h3>
        <Container>
        {events.length > 0 ? (
           events
