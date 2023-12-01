@@ -214,6 +214,7 @@ function InputBox(props) {
       const{data: existingTodos, error: fetchError} = await supabase
       .from('todo')
       .select('content, checked')
+      .eq('group_id', tripId)
       .eq('content', todo.task)
       .eq('checked', false);
       if (fetchError) {
@@ -224,6 +225,7 @@ function InputBox(props) {
         const { error: updateError } = await supabase
           .from('todo')
           .update({user: todo.owner})
+          .eq('group_id', tripId)
           .eq('content', todo.task)
           .eq('checked', false);
 
@@ -239,6 +241,7 @@ function InputBox(props) {
       const { data: existingTodos, error: fetchError } = await supabase
         .from('todo')
         .select('content')
+        .eq('group_id', tripId)
         .eq('content', todo.task);
   
       if (fetchError) {
