@@ -60,7 +60,7 @@ function EditTripInfo() {
     } else if (data) {
       console.log("Trip updated successfully:", data);
     }
-    navigate(`/trips/${tripId}`);
+    navigate(`/trips/${tripId}/`);
   };
 
   if (!trip) {
