@@ -19,7 +19,7 @@ Trip 1 already contains some data, while Trip 2 is clean.
 
 There are also other users (test2@uic.edu, test3@uic.edu, test4@uic.edu, test5@uic.edu), that use the same password.
 
-##**How to use Google Calendar functionality**
+## **How to use Google Calendar functionality**
 Since our application has not been verified by Google yet, the functionality can only be used while respecting some constraints:
 - in the OAUTH process, the user has to select a Google Account that has been inserted in a list of test users in our development dashboard. We have already inserted kaytwo@gmail.com and ckanich@uic.edu into the list. If you want to try the functionality with another email, please contact us and we will proceed with inserting it in the list.
 - For everything to work out smoothly, all the participants of the trip have to be identified by some usernames that coincide with a valid Google Account. For example, the functionality won't work if at least one of the users is identified by a username such as "test@uic.edu" or "johndoe.hotmail.com". Any valid "@google.com" or "@uic.edu" email will make everything work smoothly. This is because our website automatically adds trip participants as attendees to the created events, and the API won't work if one of the usernames is not a valid Google account.
