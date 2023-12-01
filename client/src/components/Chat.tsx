@@ -291,7 +291,7 @@ function InputBox(props) {
       const todos = await getUpdatedTodo(tripId);
       const { error } = await supabase.from("messages").insert({
         user_id: "chatGPT@bot",
-        content: changeIntoMessage(JSON.parse(todos)),
+        content: todos===null?("ChatGPT is offline right now, retry in a while"):(changeIntoMessage(JSON.parse(todos))),
         group_id: props.group,
       });
 
@@ -322,7 +322,7 @@ function InputBox(props) {
       console.log(todos)
       const { error } = await supabase.from("messages").insert({
         user_id: "chatGPT@bot",
-        content: changeIntoMessage2(JSON.parse(todos)),
+        content: todos===null?("ChatGPT is offline right now, retry in a while"):(changeIntoMessage2(JSON.parse(todos))),
         group_id: props.group,
       });
 
