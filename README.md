@@ -11,7 +11,7 @@
 Live version of the website: https://roadbuddies.onrender.com/
 ## **Demo video**
 https://youtu.be/fvqlgPaHozs
-
+## **Useful info**
 To use the website, you can use the following credentials:
 
 email: test@uic.edu
